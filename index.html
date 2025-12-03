@@ -1,347 +1,339 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>А‑Спокойствие — Главный экран</title>
-<style>
-  :root{
-    --bg:#f6f7f9;
-    --phone-w: 390px;
-    --card:#ffffff;
-    --accent-red:#e62b1e;
-    --donut-green: #9ae34a;
-    --donut-1:#ff7a58; /* orange */
-    --donut-2:#ff62b3; /* pink */
-    --donut-3:#9c5fff; /* purple */
-    --donut-4:#3fd1ff; /* cyan */
-    --tile-orange: linear-gradient(180deg,#ff7a2f,#ff5c1a);
-    --tile-blue: linear-gradient(180deg,#6f9bff,#3f6bff);
-    --tile-green: linear-gradient(180deg,#2fc16a,#10a447);
-    --shadow-strong: 0 18px 40px rgba(0,0,0,0.18);
-    --shadow-soft: 0 10px 22px rgba(0,0,0,0.12);
-    --radius:22px;
-  }
+  <meta charset="UTF-8">
+  <title>Финздоровье</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  <style>
+    body {
+      margin: 0;
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
 
-  /* center phone-like container */
-  .wrap{
-    width:100%;
-    min-height:100vh;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:24px 12px;
-    box-sizing:border-box;
-  }
+    .app {
+      max-width: 390px;
+      margin: auto;
+      background: white;
+      min-height: 100vh;
+      padding: 20px 15px 90px;
+      box-sizing: border-box;
+    }
 
-  .phone {
-    width: min(var(--phone-w), 100%);
-    border-radius:28px;
-    background: linear-gradient(#0b0b0b,#000);
-    padding:10px;
-    box-shadow: 0 26px 64px rgba(0,0,0,0.45);
-  }
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+    }
 
-  .app {
-    background:var(--card);
-    border-radius:20px;
-    overflow:hidden;
-    min-height:760px;
-    display:flex;
-    flex-direction:column;
-  }
+    h1 span {
+      color: #ff3b00;
+    }
 
-  .content{
-    padding:18px;
-    padding-bottom:110px; /* for bottom nav */
-    overflow:auto;
-  }
+    /* ================= CHARTS ================= */
+    .charts-card {
+      background: #f3f3f3;
+      border-radius: 20px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      cursor: pointer;
+    }
 
-  /* Title */
-  .title{
-    font-size:26px;
-    line-height:1.08;
-    font-weight:800;
-    color:#0b0b0b;
-    margin:4px 0 14px;
-  }
-  .title .accent{ color:var(--accent-red); }
+    .donut {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(#9ddc28 0% 60%, #f056c7 60% 90%, #1ccccc 90%);
+      position: relative;
+    }
 
-  /* card base */
-  .card{
-    background:var(--card);
-    border-radius:18px;
-    padding:14px;
-    box-shadow:var(--shadow-soft);
-    margin-bottom:14px;
-  }
+    .donut::after {
+      content: "";
+      width: 55px;
+      height: 55px;
+      background: #f3f3f3;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
 
-  /* Donuts row */
-  .donuts{
-    display:flex;
-    gap:12px;
-    justify-content:space-between;
-    align-items:center;
-  }
+    .chart-label {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 13px;
+    }
 
-  .donut-block{ flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    /* ================= HEALTH ================= */
+    .health {
+      background: white;
+      border-radius: 18px;
+      padding: 15px;
+      margin-top: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
 
-  /* donut using conic-gradient + inner hole */
-  .donut{
-    width:132px;
-    height:132px;
-    border-radius:50%;
-    position:relative;
-    display:grid;
-    place-items:center;
-    box-shadow: inset 0 6px 16px rgba(255,255,255,0.25);
-  }
-  .donut::after{
-    content:"";
-    width:68px;height:68px;border-radius:50%;background:var(--card);box-shadow: inset 0 3px 8px rgba(0,0,0,0.06);
-    position:relative; z-index:2;
-  }
-  .donut-label{ font-weight:600; color:#222; font-size:15px; margin-top:2px; }
+    .health-bar {
+      height: 10px;
+      border-radius: 10px;
+      background: #ddd;
+      margin-top: 8px;
+      position: relative;
+    }
 
-  .donut.income{
-    background:
-      conic-gradient(var(--donut-1) 0 20%, var(--donut-2) 20% 38%, var(--donut-3) 38% 62%, var(--donut-4) 62% 100%);
-  }
-  .donut.expense{
-    background:
-      conic-gradient(var(--donut-4) 0 16%, var(--donut-3) 16% 36%, var(--donut-2) 36% 54%, var(--donut-1) 54% 100%);
-  }
+    .health-fill {
+      width: 100%;
+      height: 100%;
+      background: #4caf50;
+      border-radius: 10px;
+    }
 
-  /* Health card */
-  .health .health-title{ font-weight:700; margin-bottom:8px; color:#222; }
-  .health-row{ display:flex; align-items:center; gap:10px; }
-  .health-bar{
-    flex:1;
-    height:12px;
-    background:#e9e9e9;
-    border-radius:8px;
-    overflow:hidden;
-    box-shadow: inset 0 4px 8px rgba(0,0,0,0.06);
-  }
-  .health-fill{
-    height:100%;
-    width:100%;
-    background:linear-gradient(90deg,#6ad65a,#2ecc71);
-  }
-  .health-meta{ display:flex; align-items:center; gap:8px; font-weight:600; color:#222; font-size:13px; }
+    .health-value {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-top: 5px;
+    }
 
-  /* Tasks card styling */
-  .tasks .tasks-title{ text-align:center; font-weight:800; font-size:20px; margin-bottom:12px; }
-  .task-list{ display:flex; flex-direction:column; gap:12px; }
-  .task{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:10px 6px;
-    border-radius:12px;
-    background: linear-gradient(180deg,#fbfbfb,#fff);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  }
-  .task-left{ display:flex; gap:12px; align-items:center; }
-  .bullet{ color:#333; font-size:20px; line-height:1; }
-  .task-text{ color:#222; font-size:15px; }
-  /* red framed checkbox like in original */
-  .checkbox{
-    width:30px;height:30px;border-radius:8px;border:2px solid #e23b2f;display:grid;place-items:center;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,0.06);cursor:pointer;
-  }
-  .checkbox svg{ width:18px;height:18px; display:block; }
-  .checkbox.checked{ background:linear-gradient(180deg,#fff,#ffecec); }
-  .checkbox.checked svg path{ stroke:#e23b2f; }
+    /* ================= TASKS ================= */
+    .tasks-card {
+      margin-top: 15px;
+      background: white;
+      border-radius: 18px;
+      padding: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
 
-  .dots{ display:flex; justify-content:center; gap:8px; margin-top:10px; }
-  .dot{ width:8px;height:8px;border-radius:50%;background:#cfcfcf; }
-  .dot.active{ background:#111; width:9px;height:9px; }
+    .tasks-slider {
+      display: flex;
+      transition: 0.4s;
+    }
 
-  /* Section title */
-  .section-title{ font-size:20px; font-weight:800; margin:8px 0 12px; color:#111; }
+    .task-page {
+      min-width: 100%;
+    }
 
-  /* Tiles */
-  .tiles{ display:flex; flex-wrap:wrap; gap:12px; }
-  .tile{
-    border-radius:16px; padding:18px; color:#fff; font-weight:800; position:relative; overflow:hidden;
-    min-height:96px; box-shadow:var(--shadow-soft);
-  }
-  .tile.big{ width:100%; min-height:120px; font-size:18px; border-radius:18px; }
-  .tile.small{ width:calc(50% - 6px); min-height:94px; font-size:15px; border-radius:14px; }
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
 
-  .tile .dec{ position:absolute; right:12px; bottom:8px; opacity:0.95; width:60px; height:60px; transform:translateY(6px); }
-  .tile.orange{ background:var(--tile-orange); box-shadow:var(--shadow-strong); }
-  .tile.blue{ background:var(--tile-blue); box-shadow:var(--shadow-strong); }
-  .tile.green{ background:var(--tile-green); box-shadow:var(--shadow-strong); }
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #4caf50;
+      cursor: pointer;
+    }
 
-  /* Bottom nav */
-  .bottom {
-    position:relative;
-    margin-top:auto;
-  }
-  .tabbar{
-    height:70px; display:flex; align-items:center; justify-content:space-around; background:var(--card); border-top:1px solid #eee;
-    box-shadow: 0 -10px 28px rgba(0,0,0,0.08);
-  }
-  .tab{ display:flex; flex-direction:column; align-items:center; gap:6px; color:#888; font-size:12px; cursor:pointer; padding:8px 6px; }
-  .tab.active{ color:#111; font-weight:700; }
-  .tab svg{ width:22px;height:22px; }
+    .check.active {
+      background: red;
+      border-color: red;
+    }
 
-  /* small tweaks */
-  .small-note{ font-size:12px; color:#666; margin-top:6px; text-align:right; }
-  @media (max-width:380px){
-    .title{ font-size:22px; }
-    .donut{ width:118px;height:118px; }
-  }
-</style>
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+    }
+
+    .dot.active {
+      background: black;
+    }
+
+    /* ================= FINANCE ================= */
+    .finance-title {
+      margin-top: 20px;
+      font-weight: 700;
+    }
+
+    .finance-main {
+      background: linear-gradient(135deg, #ff6a00, #ff8c00);
+      height: 90px;
+      border-radius: 20px;
+      margin-top: 10px;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+    }
+
+    .finance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .finance-card {
+      height: 90px;
+      border-radius: 20px;
+      padding: 10px;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .blue { background: #5e8bff; }
+    .green { background: #2ecc71; }
+
+    /* ================= NAVBAR ================= */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 390px;
+      margin: auto;
+      background: white;
+      height: 70px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-item {
+      font-size: 12px;
+      text-align: center;
+      color: #999;
+    }
+
+    .nav-item.active {
+      color: black;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="phone" role="application" aria-label="А-Спокойствие">
-      <div class="app" role="document">
-        <div class="content">
-          <h1 class="title"><span class="accent">А‑Спокойствие</span> — это<br>когда деньги под<br>контролем</h1>
 
-          <!-- Donuts -->
-          <div class="card donuts" aria-hidden="false">
-            <div class="donut-block">
-              <div class="donut income" aria-label="Диаграмма доходов"></div>
-              <div class="donut-label">Доходы</div>
-            </div>
-            <div class="donut-block">
-              <div class="donut expense" aria-label="Диаграмма расходов"></div>
-              <div class="donut-label">Расходы</div>
-            </div>
-          </div>
+<div class="app">
 
-          <!-- Health -->
-          <div class="card health">
-            <div class="health-title">Ваши очки здоровья</div>
-            <div class="health-row">
-              <div class="health-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Очки здоровья">
-                <div class="health-fill" style="width:100%"></div>
-              </div>
-              <div class="health-meta"><span>100/100</span>
-                <!-- heart svg -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7-4.438-9-7.192C-1.5 9.37 3.6 4 7.6 4c1.98 0 3.03.978 4.4 2.44C13.37 4.978 14.42 4 16.4 4c4 0 9.1 5.37 4.6 9.808C19 16.562 12 21 12 21z" fill="#ff4d6d"/></svg>
-              </div>
-            </div>
-          </div>
+  <h1><span>A‑Спокойствие</span> — это когда деньги под контролем</h1>
 
-          <!-- Tasks -->
-          <div class="card tasks">
-            <div class="tasks-title">Задания дня</div>
+  <!-- CHARTS -->
+  <div class="charts-card" id="chartsCard">
+    <div>
+      <div class="donut"></div>
+      <div class="chart-label">Доходы</div>
+    </div>
 
-            <div class="task-list">
-              <div class="task">
-                <div class="task-left">
-                  <div class="bullet">•</div>
-                  <div class="task-text">Задача 1: Пройти 1 урок</div>
-                </div>
-                <div class="checkbox checked" role="button" aria-pressed="true" tabindex="0" data-task="1">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#e23b2f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-              </div>
+    <div>
+      <div class="donut"></div>
+      <div class="chart-label">Расходы</div>
+    </div>
+  </div>
 
-              <div class="task">
-                <div class="task-left">
-                  <div class="bullet">•</div>
-                  <div class="task-text">Задача 2: Внести 100 рублей</div>
-                </div>
-                <div class="checkbox checked" role="button" aria-pressed="true" tabindex="0" data-task="2">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#e23b2f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-              </div>
-            </div>
+  <!-- HEALTH -->
+  <div class="health">
+    Ваши очки здоровья
+    <div class="health-bar">
+      <div class="health-fill"></div>
+    </div>
+    <div class="health-value">
+      <span>100 / 100</span>
+      <span>❤️</span>
+    </div>
+  </div>
 
-            <div class="dots" role="tablist" aria-label="Страницы">
-              <div class="dot active" role="tab" aria-selected="true"></div>
-              <div class="dot" role="tab" aria-selected="false"></div>
-              <div class="dot" role="tab" aria-selected="false"></div>
-            </div>
-          </div>
+  <!-- TASKS -->
+  <div class="tasks-card">
 
-          <div class="section-title">Ваше финздоровье</div>
+    <div class="tasks-slider" id="tasksSlider">
 
-          <div class="tiles">
-            <div class="tile big orange">
-              Планирование<br>и накопления
-              <!-- decorative svg coin/chart -->
-              <svg class="dec" viewBox="0 0 64 64" aria-hidden="true"><circle cx="44" cy="24" r="12" fill="rgba(255,255,255,0.12)"/><rect x="8" y="10" width="36" height="36" rx="6" fill="rgba(255,255,255,0.06)"/></svg>
-            </div>
+      <div class="task-page">
+        <h3>Задания дня</h3>
+        <div class="task"><span>Пройти 1 урок</span><div class="check"></div></div>
+        <div class="task"><span>Внести 100 рублей</span><div class="check"></div></div>
+      </div>
 
-            <div class="tile small blue">
-              Календарь<br>поступлений
-              <svg class="dec" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="10" width="52" height="44" rx="6" fill="rgba(255,255,255,0.12)"/><circle cx="22" cy="36" r="3" fill="#fff"/></svg>
-            </div>
+      <div class="task-page">
+        <h3>Задания недели</h3>
+        <div class="task"><span>Пройти 3 урока</span><div class="check"></div></div>
+        <div class="task"><span>Отложить 500 рублей</span><div class="check"></div></div>
+      </div>
 
-            <div class="tile small green">
-              Обучение<br>финздоровью
-              <svg class="dec" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="18" width="44" height="28" rx="4" fill="rgba(255,255,255,0.12)"/><path d="M18 30h12M18 36h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-            </div>
-          </div>
+      <div class="task-page">
+        <h3>Задания месяца</h3>
+        <div class="task"><span>Накопить 3000</span><div class="check"></div></div>
+        <div class="task"><span>Закрыть долг</span><div class="check"></div></div>
+      </div>
 
-        </div> <!-- content -->
+    </div>
 
-        <!-- bottom navigation -->
-        <div class="bottom">
-          <div class="tabbar" role="navigation" aria-label="Нижняя навигация">
-            <div class="tab active" data-tab="home" tabindex="0" aria-current="page">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V11.5z" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div>Главная</div>
-            </div>
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
 
-            <div class="tab" data-tab="pay" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2" stroke="#888" stroke-width="1.2"/><path d="M6 10h6" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg>
-              <div>Платежи</div>
-            </div>
+  </div>
 
-            <div class="tab" data-tab="benef" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="#888" stroke-width="1.2"/><path d="M12 8v8M8 12h8" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg>
-              <div>Выгода</div>
-            </div>
+  <!-- FINANCE -->
+  <div class="finance-title">Ваше финздоровье</div>
 
-            <div class="tab" data-tab="hist" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M7 12h10M10 18h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg>
-              <div>История</div>
-            </div>
+  <div class="finance-main">
+    Планирование и накопления
+  </div>
 
-            <div class="tab" data-tab="chat" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#888" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div>Чаты</div>
-            </div>
-          </div>
-        </div>
+  <div class="finance-grid">
+    <div class="finance-card blue">Календарь поступлений</div>
+    <div class="finance-card green">Обучение финздоровью</div>
+  </div>
 
-      </div> <!-- app -->
-    </div> <!-- phone -->
-  </div> <!-- wrap -->
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="nav-item active">Главная</div>
+  <div class="nav-item">Платежи</div>
+  <div class="nav-item">Выгода</div>
+  <div class="nav-item">История</div>
+  <div class="nav-item">Чаты</div>
+</div>
 
 <script>
-  // Tabs: toggle active
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.addEventListener('click', ()=> {
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-    });
-    t.addEventListener('keydown', (e)=> { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); t.click(); }});
+  let index = 0;
+  const slider = document.getElementById("tasksSlider");
+  const dots = document.querySelectorAll(".dot");
+
+  function updateSlider() {
+    slider.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach(d => d.classList.remove("active"));
+    dots[index].classList.add("active");
+  }
+
+  slider.addEventListener("click", () => {
+    index = (index + 1) % 3;
+    updateSlider();
   });
 
-  // Checkboxes: toggle checked on click/keyboard
-  document.querySelectorAll('.checkbox').forEach(cb=>{
-    cb.addEventListener('click', ()=> {
-      cb.classList.toggle('checked');
-      const pressed = cb.classList.contains('checked');
-      cb.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  document.querySelectorAll(".check").forEach(check => {
+    check.addEventListener("click", (e) => {
+      e.stopPropagation();
+      check.classList.toggle("active");
     });
-    cb.addEventListener('keydown', (e)=> { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); cb.click(); }});
   });
 
-  // For demo: make donut sizes responsive (could be controlled by data attributes)
-  // (No dynamic data required by user request; left here as hook for future)
+  document.getElementById("chartsCard").addEventListener("click", () => {
+    alert("Переход в аналитику");
+  });
 </script>
+
 </body>
 </html>

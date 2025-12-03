@@ -49,6 +49,11 @@
       position: relative;
     }
 
+    /* ВТОРАЯ ДИАГРАММА — ДРУГОЕ ЗАПОЛНЕНИЕ */
+    .donut.alt {
+      background: conic-gradient(#9ddc28 0% 40%, #f056c7 40% 75%, #1ccccc 75%);
+    }
+
     .donut::after {
       content: "";
       width: 55px;
@@ -103,18 +108,20 @@
       margin-top: 15px;
       background: white;
       border-radius: 18px;
-      padding: 15px;
       overflow: hidden;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 
     .tasks-slider {
       display: flex;
-      transition: 0.4s;
+      width: 300%;
+      transition: 0.4s ease;
     }
 
     .task-page {
-      min-width: 100%;
+      width: 100%;
+      padding: 15px;
+      box-sizing: border-box;
     }
 
     .task {
@@ -125,23 +132,32 @@
       font-size: 14px;
     }
 
+    /* ✅ НАСТОЯЩИЕ ГАЛОЧКИ */
     .check {
       width: 22px;
       height: 22px;
       border-radius: 6px;
-      border: 2px solid #4caf50;
+      border: 2px solid red;
       cursor: pointer;
+      position: relative;
     }
 
-    .check.active {
-      background: red;
-      border-color: red;
+    .check.active::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 12px;
+      border: solid red;
+      border-width: 0 3px 3px 0;
+      left: 7px;
+      top: 2px;
+      transform: rotate(45deg);
     }
 
     .dots {
       display: flex;
       justify-content: center;
-      margin-top: 10px;
+      padding-bottom: 10px;
     }
 
     .dot {
@@ -208,9 +224,17 @@
     }
 
     .nav-item {
-      font-size: 12px;
+      font-size: 11px;
       text-align: center;
       color: #999;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      margin: auto;
+      fill: currentColor;
     }
 
     .nav-item.active {
@@ -234,7 +258,7 @@
     </div>
 
     <div>
-      <div class="donut"></div>
+      <div class="donut alt"></div>
       <div class="chart-label">Расходы</div>
     </div>
   </div>
@@ -253,7 +277,6 @@
 
   <!-- TASKS -->
   <div class="tasks-card">
-
     <div class="tasks-slider" id="tasksSlider">
 
       <div class="task-page">
@@ -281,15 +304,12 @@
       <div class="dot"></div>
       <div class="dot"></div>
     </div>
-
   </div>
 
   <!-- FINANCE -->
   <div class="finance-title">Ваше финздоровье</div>
 
-  <div class="finance-main">
-    Планирование и накопления
-  </div>
+  <div class="finance-main">Планирование и накопления</div>
 
   <div class="finance-grid">
     <div class="finance-card blue">Календарь поступлений</div>
@@ -300,11 +320,26 @@
 
 <!-- NAVBAR -->
 <div class="navbar">
-  <div class="nav-item active">Главная</div>
-  <div class="nav-item">Платежи</div>
-  <div class="nav-item">Выгода</div>
-  <div class="nav-item">История</div>
-  <div class="nav-item">Чаты</div>
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
+    Главная
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M3 3h18v6H3zM3 15h18v6H3z"/></svg>
+    Платежи
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M12 2l4 7h-8l4-7zm0 20l-4-7h8l-4 7z"/></svg>
+    Выгода
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+    История
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M2 3h20v14H6l-4 4z"/></svg>
+    Чаты
+  </div>
 </div>
 
 <script>

@@ -1,0 +1,132 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8f8f8;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding-bottom: 100px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+.red {
+    color: red;
+}
+
+.charts {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.chart {
+    width: 120px;
+}
+
+.health-bar {
+    width: 100%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.health-fill {
+    background: #4cd137;
+    height: 100%;
+}
+
+.health-info {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 5px;
+}
+
+.tasks ul {
+    padding-left: 20px;
+}
+
+.center {
+    text-align: center;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 4px;
+}
+
+.dot.active {
+    background: black;
+}
+
+.grid {
+    display: flex;
+    gap: 10px;
+}
+
+.bigblock {
+    width: 60%;
+    border-radius: 20px;
+    color: white;
+    padding: 20px;
+}
+
+.smallgrid {
+    width: 40%;
+}
+
+.smallblock {
+    border-radius: 20px;
+    padding: 15px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.orange { background: #FF7F2A; }
+.blue   { background: #4C7CFF; }
+.green  { background: #1DB954; }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 65px;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #ccc;
+}
+
+.bottom-nav .item {
+    color: #444;
+    font-size: 14px;
+}
+
+.bottom-nav .active {
+    color: black;
+    font-weight: bold;
+}

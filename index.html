@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <title>Финздоровье</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       margin: 0;
       background: #f2f2f2;
       font-family: Arial, sans-serif;
     }
+
     .app {
       max-width: 390px;
       margin: auto;
@@ -18,15 +20,17 @@
       padding: 20px 15px 90px;
       box-sizing: border-box;
     }
+
     h1 {
       font-size: 20px;
       font-weight: 700;
     }
+
     h1 span {
       color: #ff3b00;
     }
 
-    /* ================= CHARTS ================= */
+    /* ===== ДИАГРАММЫ ===== */
     .charts-card {
       background: #f3f3f3;
       border-radius: 20px;
@@ -36,6 +40,7 @@
       margin-top: 15px;
       cursor: pointer;
     }
+
     .donut {
       width: 90px;
       height: 90px;
@@ -43,9 +48,11 @@
       background: conic-gradient(#9ddc28 0% 60%, #f056c7 60% 90%, #1ccccc 90%);
       position: relative;
     }
+
     .donut.alt {
       background: conic-gradient(#9ddc28 0% 40%, #f056c7 40% 75%, #1ccccc 75%);
     }
+
     .donut::after {
       content: "";
       width: 55px;
@@ -57,13 +64,14 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
+
     .chart-label {
       text-align: center;
       margin-top: 5px;
       font-size: 13px;
     }
 
-    /* ================= HEALTH ================= */
+    /* ===== ЗДОРОВЬЕ ===== */
     .health {
       background: white;
       border-radius: 18px;
@@ -71,6 +79,7 @@
       margin-top: 15px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
+
     .health-bar {
       height: 10px;
       border-radius: 10px;
@@ -78,20 +87,29 @@
       margin-top: 8px;
       position: relative;
     }
+
     .health-fill {
       width: 100%;
       height: 100%;
       background: #4caf50;
       border-radius: 10px;
     }
+
     .health-value {
       display: flex;
       justify-content: space-between;
       font-size: 13px;
       margin-top: 5px;
+      align-items: center;
     }
 
-    /* ================= TASKS ================= */
+    .heart-icon {
+      width: 18px;
+      height: 18px;
+      fill: red;
+    }
+
+    /* ===== ЗАДАНИЯ ===== */
     .tasks-card {
       margin-top: 15px;
       background: white;
@@ -99,17 +117,20 @@
       overflow: hidden;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
+
     .tasks-slider {
       display: flex;
       width: 300%;
       transition: transform 0.4s ease;
     }
+
     .task-page {
       width: calc(100% / 3);
       padding: 15px;
       box-sizing: border-box;
       flex-shrink: 0;
     }
+
     .task {
       display: flex;
       justify-content: space-between;
@@ -118,7 +139,6 @@
       font-size: 14px;
     }
 
-    /* ✅ КРАСНЫЕ ГАЛОЧКИ */
     .check {
       width: 22px;
       height: 22px;
@@ -128,6 +148,7 @@
       position: relative;
       background: white;
     }
+
     .check.active::after {
       content: "";
       position: absolute;
@@ -145,23 +166,25 @@
       justify-content: center;
       padding-bottom: 10px;
     }
+
     .dot {
       width: 7px;
       height: 7px;
       background: #ccc;
       border-radius: 50%;
       margin: 0 5px;
-      cursor: pointer;
     }
+
     .dot.active {
       background: black;
     }
 
-    /* ================= FINANCE ================= */
+    /* ===== ФИНЗДОРОВЬЕ ===== */
     .finance-title {
       margin-top: 20px;
       font-weight: 700;
     }
+
     .finance-main {
       background: linear-gradient(135deg, #ff6a00, #ff8c00);
       height: 90px;
@@ -172,12 +195,14 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .finance-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 12px;
     }
+
     .finance-card {
       height: 90px;
       border-radius: 20px;
@@ -187,10 +212,11 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .blue { background: #5e8bff; }
     .green { background: #2ecc71; }
 
-    /* ================= NAVBAR ================= */
+    /* ===== НАВБАР ===== */
     .navbar {
       position: fixed;
       bottom: 0;
@@ -205,11 +231,13 @@
       justify-content: space-around;
       align-items: center;
     }
+
     .nav-item {
       font-size: 11px;
       text-align: center;
       color: #999;
     }
+
     .nav-item svg {
       width: 22px;
       height: 22px;
@@ -217,17 +245,21 @@
       margin: auto;
       fill: currentColor;
     }
+
     .nav-item.active {
       color: black;
       font-weight: bold;
     }
   </style>
 </head>
+
 <body>
 
 <div class="app">
+
   <h1><span>A‑Спокойствие</span> — это когда деньги под контролем</h1>
 
+  <!-- ДИАГРАММЫ -->
   <div class="charts-card" id="chartsCard">
     <div>
       <div class="donut"></div>
@@ -239,30 +271,44 @@
     </div>
   </div>
 
+  <!-- ЗДОРОВЬЕ -->
   <div class="health">
     Ваши очки здоровья
-    <div class="health-bar"><div class="health-fill"></div></div>
-    <div class="health-value"><span>100 / 100</span><span>❤️</span></div>
+    <div class="health-bar">
+      <div class="health-fill"></div>
+    </div>
+    <div class="health-value">
+      <span>100 / 100</span>
+      <svg class="heart-icon" viewBox="0 0 24 24">
+        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z"/>
+      </svg>
+    </div>
   </div>
 
+  <!-- ЗАДАНИЯ -->
   <div class="tasks-card">
     <div class="tasks-slider" id="tasksSlider">
+
       <div class="task-page">
         <h3>Задания дня</h3>
         <div class="task"><span>Пройти 1 урок</span><div class="check"></div></div>
         <div class="task"><span>Внести 100 рублей</span><div class="check"></div></div>
       </div>
+
       <div class="task-page">
         <h3>Задания недели</h3>
-        <div class="task"><span>Пройдите 1 главу</span><div class="check"></div></div>
-        <div class="task"><span>Сократите расходы</span><div class="check"></div></div>
+        <div class="task"><span>Пройти 1 главу</span><div class="check"></div></div>
+        <div class="task"><span>Сократить расходы</span><div class="check"></div></div>
       </div>
+
       <div class="task-page">
         <h3>Задания месяца</h3>
-        <div class="task"><span>Распределите доход</span><div class="check"></div></div>
-        <div class="task"><span>Покорите Аверест</span><div class="check"></div></div>
+        <div class="task"><span>Распределить доход</span><div class="check"></div></div>
+        <div class="task"><span>Финансовая цель</span><div class="check"></div></div>
       </div>
+
     </div>
+
     <div class="dots">
       <div class="dot active"></div>
       <div class="dot"></div>
@@ -270,61 +316,67 @@
     </div>
   </div>
 
+  <!-- ФИНЗДОРОВЬЕ -->
   <div class="finance-title">Ваше финздоровье</div>
+
   <div class="finance-main">Планирование и накопления</div>
+
   <div class="finance-grid">
     <div class="finance-card blue">Календарь поступлений</div>
     <div class="finance-card green">Обучение финздоровью</div>
   </div>
+
 </div>
 
+<!-- НАВБАР -->
 <div class="navbar">
-  <div class="nav-item active">🏠<br>Главная</div>
-  <div class="nav-item">💳<br>Платежи</div>
-  <div class="nav-item">🎯<br>Выгода</div>
-  <div class="nav-item">📊<br>История</div>
-  <div class="nav-item">💬<br>Чаты</div>
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10h-6v-6H9v6H3z"/></svg>
+    Главная
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M3 3h18v6H3zM3 15h18v6H3z"/></svg>
+    Платежи
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M12 2l4 8h-8z"/></svg>
+    Выгода
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+    История
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M2 3h20v14H6l-4 4z"/></svg>
+    Чаты
+  </div>
 </div>
 
 <script>
-let index = 0;
-const slider = document.getElementById("tasksSlider");
-const dots = document.querySelectorAll(".dot");
+  let index = 0;
+  const slider = document.getElementById("tasksSlider");
+  const dots = document.querySelectorAll(".dot");
 
-function updateSlider() {
-  slider.style.transform = `translateX(-${index * 33.3333}%)`;
-  dots.forEach(d => d.classList.remove("active"));
-  dots[index].classList.add("active");
-}
+  function updateSlider() {
+    slider.style.transform = `translateX(-${index * 33.3333}%)`;
+    dots.forEach(d => d.classList.remove("active"));
+    dots[index].classList.add("active");
+  }
 
-document.querySelectorAll(".check").forEach(check => {
-  check.addEventListener("click", (e) => {
-    e.stopPropagation();
-    check.classList.toggle("active");
+  slider.addEventListener("click", () => {
+    index = (index + 1) % 3;
+    updateSlider();
   });
-});
 
-let startX = 0;
-slider.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-slider.addEventListener("touchend", e => {
-  const diff = e.changedTouches[0].clientX - startX;
-  if (diff < -40 && index < 2) index++;
-  if (diff > 40 && index > 0) index--;
+  document.querySelectorAll(".check").forEach(check => {
+    check.addEventListener("click", e => {
+      e.stopPropagation();
+      check.classList.toggle("active");
+    });
+  });
+
   updateSlider();
-});
-
-dots.forEach((dot, i) => dot.addEventListener("click", () => {
-  index = i;
-  updateSlider();
-}));
-
-document.getElementById("chartsCard").onclick = () => {
-  location.href = "analytics.html";
-};
-document.querySelector(".finance-main").onclick = () => alert("Накопления");
-document.querySelector(".blue").onclick = () => alert("Календарь");
-document.querySelector(".green").onclick = () => alert("Обучение");
-
 </script>
+
 </body>
 </html>

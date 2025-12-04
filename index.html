@@ -318,7 +318,8 @@ dots.forEach((dot, i) => dot.addEventListener("click", () => {
   updateSlider();
 }));
 
-document.getElementById("chartsCard").onclick = () => alert("Аналитика");
+document.getElementById("chartsCard").onclick = () => {
+  location.href = "analytics.html";
 document.querySelector(".finance-main").onclick = () => alert("Накопления");
 document.querySelector(".blue").onclick = () => alert("Календарь");
 document.querySelector(".green").onclick = () => alert("Обучение");

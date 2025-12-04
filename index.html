@@ -1,616 +1,307 @@
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
   <meta charset="UTF-8">
-
   <title>Финздоровье</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-
     body {
-
       margin: 0;
-
       background: #f2f2f2;
-
       font-family: Arial, sans-serif;
-
     }
-
     .app {
-
       max-width: 390px;
-
       margin: auto;
-
       background: white;
-
       min-height: 100vh;
-
       padding: 20px 15px 90px;
-
       box-sizing: border-box;
-
     }
-
     h1 {
-
       font-size: 20px;
-
       font-weight: 700;
-
     }
-
     h1 span {
-
       color: #ff3b00;
-
     }
-
-    /* ================= CHARTS ================= */
 
     .charts-card {
-
       background: #f3f3f3;
-
       border-radius: 20px;
-
       padding: 15px;
-
       display: flex;
-
       justify-content: space-around;
-
       margin-top: 15px;
-
       cursor: pointer;
-
     }
 
     .donut {
-
       width: 90px;
-
       height: 90px;
-
       border-radius: 50%;
-
       background: conic-gradient(#9ddc28 0% 60%, #f056c7 60% 90%, #1ccccc 90%);
-
       position: relative;
-
     }
-
     .donut.alt {
-
       background: conic-gradient(#9ddc28 0% 40%, #f056c7 40% 75%, #1ccccc 75%);
-
     }
-
     .donut::after {
-
       content: "";
-
       width: 55px;
-
       height: 55px;
-
       background: #f3f3f3;
-
       border-radius: 50%;
-
       position: absolute;
-
       top: 50%;
-
       left: 50%;
-
       transform: translate(-50%, -50%);
-
     }
 
     .chart-label {
-
       text-align: center;
-
       margin-top: 5px;
-
       font-size: 13px;
-
     }
 
-    /* ================= HEALTH ================= */
-
     .health {
-
       background: white;
-
       border-radius: 18px;
-
       padding: 15px;
-
       margin-top: 15px;
-
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-
     }
 
     .health-bar {
-
       height: 10px;
-
       border-radius: 10px;
-
       background: #ddd;
-
       margin-top: 8px;
-
-      position: relative;
-
     }
 
     .health-fill {
-
       width: 100%;
-
       height: 100%;
-
       background: #4caf50;
-
       border-radius: 10px;
-
     }
 
     .health-value {
-
       display: flex;
-
       justify-content: space-between;
-
       font-size: 13px;
-
       margin-top: 5px;
-
+      align-items: center;
     }
 
-    /* ================= TASKS ================= */
+    .heart {
+      width: 14px;
+      height: 14px;
+      background: red;
+      transform: rotate(-45deg);
+      position: relative;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      background: red;
+      border-radius: 50%;
+      position: absolute;
+    }
+    .heart::before { top: -7px; left: 0; }
+    .heart::after { left: 7px; top: 0; }
 
     .tasks-card {
-
       margin-top: 15px;
-
       background: white;
-
       border-radius: 18px;
-
       overflow: hidden;
-
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-
     }
 
     .tasks-slider {
-
       display: flex;
-
       width: 300%;
-
       transition: transform 0.4s ease;
-
     }
 
     .task-page {
-
       width: calc(100% / 3);
-
       padding: 15px;
-
       box-sizing: border-box;
-
       flex-shrink: 0;
-
     }
 
     .task {
-
       display: flex;
-
       justify-content: space-between;
-
       align-items: center;
-
       margin-top: 10px;
-
       font-size: 14px;
-
     }
 
-    /* ✅ КРАСНЫЕ ГАЛОЧКИ */
-
     .check {
-
       width: 22px;
-
       height: 22px;
-
       border-radius: 6px;
-
       border: 2px solid red;
-
       cursor: pointer;
-
       position: relative;
-
       background: white;
-
     }
 
     .check.active::after {
-
       content: "";
-
       position: absolute;
-
       width: 6px;
-
       height: 12px;
-
       border: solid red;
-
       border-width: 0 3px 3px 0;
-
       left: 6px;
-
       top: 1px;
-
       transform: rotate(45deg);
-
     }
 
     .dots {
-
       display: flex;
-
       justify-content: center;
-
       padding-bottom: 10px;
-
     }
 
     .dot {
-
       width: 7px;
-
       height: 7px;
-
       background: #ccc;
-
       border-radius: 50%;
-
       margin: 0 5px;
-
       cursor: pointer;
-
     }
 
     .dot.active {
-
       background: black;
-
     }
 
-    /* ================= FINANCE ================= */
-
     .finance-title {
-
       margin-top: 20px;
-
       font-weight: 700;
-
     }
 
     .finance-main {
-
       background: linear-gradient(135deg, #ff6a00, #ff8c00);
-
       height: 90px;
-
       border-radius: 20px;
-
       margin-top: 10px;
-
       color: white;
-
       padding: 15px;
-
       font-weight: bold;
-
       cursor: pointer;
-
     }
 
     .finance-grid {
-
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
       gap: 12px;
-
       margin-top: 12px;
-
     }
 
     .finance-card {
-
       height: 90px;
-
       border-radius: 20px;
-
       padding: 10px;
-
       color: white;
-
       font-size: 13px;
-
       font-weight: bold;
-
       cursor: pointer;
-
     }
 
     .blue { background: #5e8bff; }
-
     .green { background: #2ecc71; }
 
-    /* ================= NAVBAR ================= */
-
     .navbar {
-
       position: fixed;
-
       bottom: 0;
-
       left: 0;
-
       right: 0;
-
       max-width: 390px;
-
       margin: auto;
-
       background: white;
-
       height: 70px;
-
       border-top: 1px solid #ddd;
-
       display: flex;
-
       justify-content: space-around;
-
       align-items: center;
-
     }
 
     .nav-item {
-
       font-size: 11px;
-
       text-align: center;
-
       color: #999;
-
     }
 
-    .nav-item svg {
-
+    .icon {
       width: 22px;
-
       height: 22px;
-
-      display: block;
-
       margin: auto;
-
-      fill: currentColor;
-
+      background: #999;
+      border-radius: 6px;
+      margin-bottom: 3px;
     }
 
     .nav-item.active {
-
       color: black;
-
       font-weight: bold;
-
     }
-
   </style>
-
 </head>
-
 <body>
 
 <div class="app">
-
   <h1><span>A‑Спокойствие</span> — это когда деньги под контролем</h1>
 
   <div class="charts-card" id="chartsCard">
-
     <div>
-
       <div class="donut"></div>
-
       <div class="chart-label">Доходы</div>
-
     </div>
-
     <div>
-
       <div class="donut alt"></div>
-
       <div class="chart-label">Расходы</div>
-
     </div>
-
   </div>
 
   <div class="health">
-
     Ваши очки здоровья
-
     <div class="health-bar"><div class="health-fill"></div></div>
-
-    <div class="health-value"><span>100 / 100</span><span>❤️</span></div>
-
-  </div>
-
-  <div class="tasks-card">
-
-    <div class="tasks-slider" id="tasksSlider">
-
-      <div class="task-page">
-
-        <h3>Задания дня</h3>
-
-        <div class="task"><span>Пройти 1 урок</span><div class="check"></div></div>
-
-        <div class="task"><span>Внести 100 рублей</span><div class="check"></div></div>
-
-      </div>
-
-      <div class="task-page">
-
-        <h3>Задания недели</h3>
-
-        <div class="task"><span>Пройдите 1 главу</span><div class="check"></div></div>
-
-        <div class="task"><span>Сократите расходы</span><div class="check"></div></div>
-
-      </div>
-
-      <div class="task-page">
-
-        <h3>Задания месяца</h3>
-
-        <div class="task"><span>Распределите доход</span><div class="check"></div></div>
-
-        <div class="task"><span>Покорите Аверест</span><div class="check"></div></div>
-
-      </div>
-
+    <div class="health-value">
+      <span>100 / 100</span>
+      <div class="heart"></div>
     </div>
-
-    <div class="dots">
-
-      <div class="dot active"></div>
-
-      <div class="dot"></div>
-
-      <div class="dot"></div>
-
-    </div>
-
   </div>
 
   <div class="finance-title">Ваше финздоровье</div>
-
   <div class="finance-main">Планирование и накопления</div>
 
   <div class="finance-grid">
-
     <div class="finance-card blue">Календарь поступлений</div>
-
     <div class="finance-card green">Обучение финздоровью</div>
-
   </div>
-
 </div>
 
 <div class="navbar">
-
-  <div class="nav-item active">🏠<br>Главная</div>
-
-  <div class="nav-item">💳<br>Платежи</div>
-
-  <div class="nav-item">🎯<br>Выгода</div>
-
-  <div class="nav-item">📊<br>История</div>
-
-  <div class="nav-item">💬<br>Чаты</div>
-
+  <div class="nav-item active"><div class="icon"></div>Главная</div>
+  <div class="nav-item"><div class="icon"></div>Платежи</div>
+  <div class="nav-item"><div class="icon"></div>Выгода</div>
+  <div class="nav-item"><div class="icon"></div>История</div>
+  <div class="nav-item"><div class="icon"></div>Чаты</div>
 </div>
 
 <script>
-
-let index = 0;
-
-const slider = document.getElementById("tasksSlider");
-
-const dots = document.querySelectorAll(".dot");
-
-function updateSlider() {
-
-  slider.style.transform = `translateX(-${index * 33.3333}%)`;
-
-  dots.forEach(d => d.classList.remove("active"));
-
-  dots[index].classList.add("active");
-
-}
-
-document.querySelectorAll(".check").forEach(check => {
-
-  check.addEventListener("click", (e) => {
-
-    e.stopPropagation();
-
-    check.classList.toggle("active");
-
-  });
-
-});
-
-let startX = 0;
-
-slider.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-
-slider.addEventListener("touchend", e => {
-
-  const diff = e.changedTouches[0].clientX - startX;
-
-  if (diff < -40 && index < 2) index++;
-
-  if (diff > 40 && index > 0) index--;
-
-  updateSlider();
-
-});
-
-dots.forEach((dot, i) => dot.addEventListener("click", () => {
-
-  index = i;
-
-  updateSlider();
-
-}));
-
-document.getElementById("chartsCard").onclick = () => alert("Аналитика");
-
-document.querySelector(".finance-main").onclick = () => alert("Накопления");
-
-document.querySelector(".blue").onclick = () => alert("Календарь");
-
-document.querySelector(".green").onclick = () => alert("Обучение");
-
+document.getElementById("chartsCard").onclick = () => {
+  location.href = "analytics.html";
+};
 </script>
 
 </body>
-
 </html>
-

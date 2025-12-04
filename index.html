@@ -74,7 +74,7 @@
       color: #000;
     }
     
-    /* Измененный блок здоровья - сердце на шкале справа */
+    /* Измененный блок здоровья - СЕРДЦЕ на шкале справа */
     .health {
       background: white;
       border-radius: 14px;
@@ -90,7 +90,7 @@
       background: #e0e0e0;
       margin-top: 10px;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
     .health-fill {
       width: 100%;
@@ -112,9 +112,8 @@
       height: 16px;
       fill: #ff5252;
       position: absolute;
-      right: 0;
+      right: -8px; /* Позиционируем так, чтобы половина сердца выходила за границу полосы */
       top: -5px;
-      transform: translateX(50%);
     }
     
     .tasks-card {
@@ -333,7 +332,9 @@
     Ваши очки здоровья
     <div class="health-bar">
       <div class="health-fill">
-        <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21s-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-8 11-8 11z"/></svg>
+        <svg class="heart-icon" viewBox="0 0 24 24">
+          <path d="M12 21s-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-8 11-8 11z"/>
+        </svg>
       </div>
     </div>
     <div class="health-value">

@@ -30,6 +30,13 @@
       font-size: 22px;
       margin-right: 10px;
       cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* ===== TABS ===== */
@@ -193,6 +200,14 @@
       color: black;
       font-weight: bold;
     }
+
+    .icon {
+      width: 22px;
+      height: 22px;
+      background: #999;
+      border-radius: 6px;
+      margin: auto auto 4px;
+    }
   </style>
 </head>
 <body>
@@ -201,7 +216,7 @@
 
   <!-- HEADER -->
   <div class="header">
-    <div class="back" onclick="location.href='index.html'">←</div>
+    <div class="back" onclick="location.href='index.html'">‹</div>
     Аналитика
   </div>
 
@@ -227,8 +242,8 @@
   <div class="analysis-card">
     <div class="analysis-title">Анализ</div>
     <div class="analysis-text">
-      Проверка корректности расходов по КУ — коды выглядят аномально высокие. 
-      Проверьте списания по одному и тому же киберсервису.
+      Проверка корректности расходов показывает аномально высокие списания.
+      Рекомендуется проверить автоматические платежи.
     </div>
   </div>
 
@@ -237,7 +252,7 @@
     <div class="task-title">Задания на день</div>
 
     <div class="task">
-      <span>Пройдите урок в разделе <b>Обучение</b></span>
+      <span>Пройдите урок в разделе Обучение</span>
       <div class="check active"></div>
     </div>
     <div class="task">
@@ -253,11 +268,11 @@
 
 <!-- NAVBAR -->
 <div class="navbar">
-  <div class="nav-item active">🏠<br>Главная</div>
-  <div class="nav-item">💳<br>Платежи</div>
-  <div class="nav-item">🎯<br>Выгода</div>
-  <div class="nav-item">📊<br>История</div>
-  <div class="nav-item">💬<br>Чаты</div>
+  <div class="nav-item active"><div class="icon"></div>Главная</div>
+  <div class="nav-item"><div class="icon"></div>Платежи</div>
+  <div class="nav-item"><div class="icon"></div>Выгода</div>
+  <div class="nav-item"><div class="icon"></div>История</div>
+  <div class="nav-item"><div class="icon"></div>Чаты</div>
 </div>
 
 </body>

@@ -5,49 +5,49 @@
   <title>Финздоровье</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* Общий вайб - чистый, светлый, современный */
     body {
       margin: 0;
       background: #fafafa;
       font-family: 'Segoe UI', -apple-system, sans-serif;
       color: #333;
+      -webkit-font-smoothing: antialiased;
     }
     .app {
       max-width: 390px;
       margin: auto;
       background: white;
       min-height: 100vh;
-      padding: 20px 15px 90px;
+      padding: 20px 15px 80px;
       box-sizing: border-box;
       position: relative;
     }
     
-    /* Заголовок - более тонкий и элегантный */
+    /* Заголовок - КРАСНЫЙ как на картинке */
     h1 {
-      font-size: 22px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin-bottom: 10px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      color: #000;
     }
     h1 span {
-      color: #ff6a00;
+      color: #ff3b00; /* КРАСНЫЙ как на картинке */
       font-weight: 700;
     }
     
-    /* Круговые диаграммы - более компактные */
     .charts-card {
       background: #f8f8f8;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 12px;
       display: flex;
       justify-content: space-around;
-      margin-top: 5px;
+      margin-top: 0;
       cursor: pointer;
       border: 1px solid #eee;
     }
     .donut {
-      width: 75px;
-      height: 75px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       background: conic-gradient(#4CAF50 0% 60%, #FF9800 60% 90%, #2196F3 90%);
       position: relative;
@@ -57,8 +57,8 @@
     }
     .donut::after {
       content: "";
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       background: #f8f8f8;
       border-radius: 50%;
       position: absolute;
@@ -68,57 +68,61 @@
     }
     .chart-label {
       text-align: center;
-      margin-top: 8px;
-      font-size: 14px;
+      margin-top: 6px;
+      font-size: 13px;
       font-weight: 500;
-      color: #444;
+      color: #000;
     }
     
-    /* Очки здоровья - более минималистичные */
+    /* Измененный блок здоровья - сердце на шкале справа */
     .health {
       background: white;
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 20px;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 15px;
       border: 1px solid #eee;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      font-size: 14px;
+      font-weight: 500;
     }
     .health-bar {
-      height: 8px;
-      border-radius: 4px;
+      height: 6px;
+      border-radius: 3px;
       background: #e0e0e0;
-      margin-top: 12px;
+      margin-top: 10px;
       position: relative;
       overflow: hidden;
     }
     .health-fill {
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
-      border-radius: 4px;
+      background: #4CAF50;
+      border-radius: 3px;
+      position: relative;
     }
     .health-value {
       display: flex;
       justify-content: space-between;
-      font-size: 14px;
-      margin-top: 8px;
+      font-size: 13px;
+      margin-top: 6px;
       align-items: center;
       font-weight: 500;
     }
     .heart-icon {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: #ff5252;
+      position: absolute;
+      right: 0;
+      top: -5px;
+      transform: translateX(50%);
     }
     
-    /* Задания - более структурированные */
     .tasks-card {
-      margin-top: 20px;
+      margin-top: 15px;
       background: white;
-      border-radius: 16px;
+      border-radius: 14px;
       overflow: hidden;
       border: 1px solid #eee;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .tasks-slider {
       display: flex;
@@ -127,126 +131,145 @@
     }
     .task-page {
       width: calc(100% / 3);
-      padding: 20px;
+      padding: 16px;
       box-sizing: border-box;
       flex-shrink: 0;
     }
     .task-page h3 {
-      margin: 0 0 15px 0;
-      font-size: 16px;
+      margin: 0 0 12px 0;
+      font-size: 15px;
       font-weight: 600;
-      color: #222;
+      color: #000;
     }
     .task {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 12px;
-      font-size: 14px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f5f5f5;
-    }
-    .task:last-child {
-      border-bottom: none;
+      margin-top: 8px;
+      font-size: 13px;
+      padding: 8px 0;
     }
     .check {
-      width: 20px;
-      height: 20px;
-      border-radius: 5px;
-      border: 2px solid #ddd;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid #ccc;
       cursor: pointer;
       position: relative;
       background: white;
       transition: all 0.2s;
     }
-    .check:hover {
-      border-color: #aaa;
-    }
     .check.active {
-      background: #4CAF50;
-      border-color: #4CAF50;
+      background: #ff3b00; /* КРАСНЫЕ галочки */
+      border-color: #ff3b00;
     }
     .check.active::after {
       content: "";
       position: absolute;
-      width: 5px;
-      height: 10px;
+      width: 4px;
+      height: 8px;
       border: solid white;
       border-width: 0 2px 2px 0;
-      left: 6px;
+      left: 5px;
       top: 2px;
       transform: rotate(45deg);
     }
     
-    /* Точки для слайдера */
     .dots {
       display: flex;
       justify-content: center;
-      padding: 12px 0;
+      padding: 10px 0;
       background: #fafafa;
+      border-top: 1px solid #eee;
     }
     .dot {
-      width: 6px;
-      height: 6px;
-      background: #ddd;
+      width: 5px;
+      height: 5px;
+      background: #ccc;
       border-radius: 50%;
-      margin: 0 4px;
+      margin: 0 3px;
       cursor: pointer;
       transition: all 0.3s;
     }
     .dot.active {
       background: #666;
-      width: 8px;
-      height: 8px;
     }
     
-    /* Финансовый блок - как на картинке */
     .finance-title {
-      margin-top: 25px;
-      font-weight: 600;
-      font-size: 16px;
-      color: #222;
+      margin-top: 20px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #000;
     }
     .finance-main {
       background: linear-gradient(135deg, #ff6a00, #ff8c00);
-      height: 85px;
-      border-radius: 16px;
-      margin-top: 10px;
+      height: 80px;
+      border-radius: 14px;
+      margin-top: 8px;
       color: white;
-      padding: 18px;
+      padding: 16px 60px 16px 16px; /* Отступ справа для иконки */
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      font-size: 17px;
-      box-shadow: 0 4px 12px rgba(255, 106, 0, 0.2);
+      font-size: 16px;
+      position: relative;
     }
     .finance-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 10px;
     }
     .finance-card {
-      height: 85px;
-      border-radius: 16px;
-      padding: 15px;
+      height: 80px;
+      border-radius: 14px;
+      padding: 14px 60px 14px 14px; /* Отступ справа для иконки */
       color: white;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      position: relative;
     }
     .blue { 
-      background: linear-gradient(135deg, #5e8bff, #7b9eff);
+      background: #5e8bff;
     }
     .green { 
-      background: linear-gradient(135deg, #2ecc71, #4cd964);
+      background: #2ecc71;
     }
     
-    /* Навигация - более компактная */
+    /* Иконки для финансового блока - теперь справа */
+    .finance-icon {
+      position: absolute;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .finance-main .finance-icon {
+      right: 20px;
+      width: 36px;
+      height: 36px;
+    }
+    
+    .finance-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+    
+    .finance-main .finance-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    
     .navbar {
       position: fixed;
       bottom: 0;
@@ -255,8 +278,8 @@
       max-width: 390px;
       margin: auto;
       background: white;
-      height: 65px;
-      border-top: 1px solid #eee;
+      height: 60px;
+      border-top: 1px solid #ddd;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -264,32 +287,29 @@
       padding: 0 5px;
     }
     .nav-item {
-      font-size: 10px;
+      font-size: 9px;
       text-align: center;
-      color: #888;
-      padding: 8px 5px;
-      border-radius: 8px;
-      transition: all 0.2s;
+      color: #999;
+      padding: 6px 3px;
       flex: 1;
-      max-width: 60px;
+      max-width: 55px;
     }
     .nav-item svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       display: block;
-      margin: 0 auto 4px;
+      margin: 0 auto 3px;
       fill: currentColor;
     }
     .nav-item.active {
-      color: #ff6a00;
-      font-weight: 600;
-      background: rgba(255, 106, 0, 0.05);
+      color: #000;
+      font-weight: 700;
     }
     
-    /* Легкие анимации для интерактива */
-    .finance-main:hover, .finance-card:hover, .charts-card:hover {
-      transform: translateY(-2px);
-      transition: transform 0.2s;
+    .separator {
+      height: 1px;
+      background: #eee;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -311,10 +331,14 @@
 
   <div class="health">
     Ваши очки здоровья
-    <div class="health-bar"><div class="health-fill"></div></div>
+    <div class="health-bar">
+      <div class="health-fill">
+        <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21s-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-8 11-8 11z"/></svg>
+      </div>
+    </div>
     <div class="health-value">
+      <span></span>
       <span>100 / 100</span>
-      <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21s-8-6-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5-8 11-8 11z"/></svg>
     </div>
   </div>
 
@@ -322,18 +346,18 @@
     <div class="tasks-slider" id="tasksSlider">
       <div class="task-page">
         <h3>Задания дня</h3>
-        <div class="task"><span>Пройти 1 урок</span><div class="check"></div></div>
-        <div class="task"><span>Внести 100 рублей</span><div class="check"></div></div>
+        <div class="task"><span>Задача 1: Пройти 1 урок</span><div class="check"></div></div>
+        <div class="task"><span>Задача 2: Внести 100 рублей</span><div class="check"></div></div>
       </div>
       <div class="task-page">
         <h3>Задания недели</h3>
-        <div class="task"><span>Пройдите 1 главу</span><div class="check"></div></div>
-        <div class="task"><span>Сократите расходы</span><div class="check"></div></div>
+        <div class="task"><span>Задача 1: Пройти 1 главу</span><div class="check"></div></div>
+        <div class="task"><span>Задача 2: Сократить расходы</span><div class="check"></div></div>
       </div>
       <div class="task-page">
         <h3>Задания месяца</h3>
-        <div class="task"><span>Распределите доход</span><div class="check"></div></div>
-        <div class="task"><span>Покорите Аверест</span><div class="check"></div></div>
+        <div class="task"><span>Задача 1: Распределить доход</span><div class="check"></div></div>
+        <div class="task"><span>Задача 2: Покорить Аверест</span><div class="check"></div></div>
       </div>
     </div>
 
@@ -344,11 +368,38 @@
     </div>
   </div>
 
+  <div class="separator"></div>
+
   <div class="finance-title">Ваше финздоровье</div>
-  <div class="finance-main">Планирование и накопления</div>
+  
+  <!-- Поменял местами иконки: теперь календарь у "Планирование и накопления" -->
+  <div class="finance-main">
+    Планирование и накопления
+    <div class="finance-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+      </svg>
+    </div>
+  </div>
+  
   <div class="finance-grid">
-    <div class="finance-card blue">Календарь поступлений</div>
-    <div class="finance-card green">Обучение финздоровью</div>
+    <!-- Иконка документа/карточки у "Календарь поступлений" -->
+    <div class="finance-card blue">
+      Календарь поступлений
+      <div class="finance-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="finance-card green">
+      Обучение финздоровью
+      <div class="finance-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm7 14H5v-2h14v2z"/>
+        </svg>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -395,13 +446,6 @@ dots.forEach((dot, i) => dot.addEventListener("click", () => {
 document.getElementById("chartsCard").onclick = () => {
   location.href = "analytics.html";
 };
-
-// Легкий эффект при нажатии на карточки
-document.querySelectorAll('.finance-main, .finance-card, .charts-card').forEach(card => {
-  card.addEventListener('mousedown', () => card.style.opacity = '0.8');
-  card.addEventListener('mouseup', () => card.style.opacity = '1');
-  card.addEventListener('mouseleave', () => card.style.opacity = '1');
-});
 </script>
 
 </body>

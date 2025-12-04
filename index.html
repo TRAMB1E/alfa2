@@ -108,20 +108,24 @@
       margin-top: 15px;
       background: white;
       border-radius: 18px;
-      overflow: hidden;
+      overflow: hidden; /* важно: прячет "подглядывание" соседних страниц */
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 
+    /* ширина слайдера — 3 страницы, каждая по 1/3 */
     .tasks-slider {
       display: flex;
       width: 300%;
-      transition: 0.4s ease;
+      transition: transform 0.4s ease;
+      will-change: transform;
     }
 
+    /* каждая страница — ровно треть от слайдера (т.е. видимая область) */
     .task-page {
-      width: 100%;
+      width: calc(100% / 3);
       padding: 15px;
       box-sizing: border-box;
+      flex-shrink: 0;
     }
 
     .task {
@@ -132,7 +136,7 @@
       font-size: 14px;
     }
 
-    /* ✅ НАСТОЯЩИЕ ГАЛОЧКИ */
+    /* ✅ НАСТОЯЩИЕ ГАЛОЧКИ — красные */
     .check {
       width: 22px;
       height: 22px;
@@ -140,6 +144,12 @@
       border: 2px solid red;
       cursor: pointer;
       position: relative;
+      display: inline-block;
+      background: white;
+    }
+
+    .check.active {
+      /* фон можно оставить белым, галочка рисуется псевдоэлементом */
     }
 
     .check.active::after {
@@ -149,8 +159,8 @@
       height: 12px;
       border: solid red;
       border-width: 0 3px 3px 0;
-      left: 7px;
-      top: 2px;
+      left: 6px;
+      top: 1px;
       transform: rotate(45deg);
     }
 
@@ -190,7 +200,7 @@
 
     .finance-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr; /* оба на одном уровне */
       gap: 12px;
       margin-top: 12px;
     }
@@ -281,20 +291,20 @@
 
       <div class="task-page">
         <h3>Задания дня</h3>
-        <div class="task"><span>Пройти 1 урок</span><div class="check"></div></div>
-        <div class="task"><span>Внести 100 рублей</span><div class="check"></div></div>
+        <div class="task"><span>Пройти 1 урок</span><div class="check" data-task="d1"></div></div>
+        <div class="task"><span>Внести 100 рублей</span><div class="check" data-task="d2"></div></div>
       </div>
 
       <div class="task-page">
         <h3>Задания недели</h3>
-        <div class="task"><span>Пройти 3 урока</span><div class="check"></div></div>
-        <div class="task"><span>Отложить 500 рублей</span><div class="check"></div></div>
+        <div class="task"><span>Пройти 3 урока</span><div class="check" data-task="w1"></div></div>
+        <div class="task"><span>Отложить 500 рублей</span><div class="check" data-task="w2"></div></div>
       </div>
 
       <div class="task-page">
         <h3>Задания месяца</h3>
-        <div class="task"><span>Накопить 3000</span><div class="check"></div></div>
-        <div class="task"><span>Закрыть долг</span><div class="check"></div></div>
+        <div class="task"><span>Накопить 3000</span><div class="check" data-task="m1"></div></div>
+        <div class="task"><span>Закрыть долг</span><div class="check" data-task="m2"></div></div>
       </div>
 
     </div>
@@ -321,53 +331,88 @@
 <!-- NAVBAR -->
 <div class="navbar">
   <div class="nav-item active">
-    <svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
     Главная
   </div>
   <div class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M3 3h18v6H3zM3 15h18v6H3z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v6H3zM3 15h18v6H3z"/></svg>
     Платежи
   </div>
   <div class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M12 2l4 7h-8l4-7zm0 20l-4-7h8l-4 7z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l4 7h-8l4-7zm0 20l-4-7h8l-4 7z"/></svg>
     Выгода
   </div>
   <div class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/></svg>
     История
   </div>
   <div class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M2 3h20v14H6l-4 4z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h20v14H6l-4 4z"/></svg>
     Чаты
   </div>
 </div>
 
 <script>
+  // индекс текущей страницы (0..2)
   let index = 0;
+
   const slider = document.getElementById("tasksSlider");
   const dots = document.querySelectorAll(".dot");
 
+  // обновление слайдера: смещаем на одну страницу (1/3 = 33.3333%)
   function updateSlider() {
-    slider.style.transform = `translateX(-${index * 100}%)`;
+    const shiftPercent = index * (100 / 3); // 0, 33.333..., 66.666...
+    slider.style.transform = `translateX(-${shiftPercent}%)`;
     dots.forEach(d => d.classList.remove("active"));
     dots[index].classList.add("active");
   }
 
+  // кликом по слайдеру перелистываем вправо
   slider.addEventListener("click", () => {
     index = (index + 1) % 3;
     updateSlider();
   });
 
+  // галочки: кликабельные, ставятся/убираются (e.stopPropagation защищает от клика по слайдер)
   document.querySelectorAll(".check").forEach(check => {
     check.addEventListener("click", (e) => {
       e.stopPropagation();
       check.classList.toggle("active");
     });
+    // клавиатурная доступность
+    check.setAttribute("tabindex","0");
+    check.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        check.click();
+      }
+    });
   });
 
+  // клик по карточке диаграмм — оставил как было
   document.getElementById("chartsCard").addEventListener("click", () => {
     alert("Переход в аналитику");
   });
+
+  // dots кликабельны — можно перескочить сразу
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", (e) => {
+      e.stopPropagation();
+      index = i;
+      updateSlider();
+    });
+    dot.setAttribute("tabindex", "0");
+    dot.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        index = i;
+        updateSlider();
+      }
+    });
+  });
+
+  // инициализация (чтобы всё было корректно при первой загрузке)
+  updateSlider();
 </script>
 
 </body>

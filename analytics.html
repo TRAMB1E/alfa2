@@ -8,7 +8,7 @@
     body {
       margin: 0;
       background: #f2f2f2;
-      font-family: Arial, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
     }
     .app {
       max-width: 390px;
@@ -27,87 +27,157 @@
       font-size: 18px;
     }
     .back {
-      font-size: 22px;
-      margin-right: 10px;
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid black;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      margin-right: 10px;
+    }
+    .back svg {
+      width: 22px;
+      height: 22px;
     }
 
     /* ===== TABS ===== */
+    .tabs-card {
+      margin-top: 15px;
+      background: #f5f5f5;
+      border-radius: 18px;
+      padding: 6px 8px;
+    }
+
     .tabs {
       display: flex;
-      background: #f1f1f1;
-      border-radius: 12px;
-      margin-top: 15px;
-      overflow: hidden;
+      background: #f5f5f5;
+      border-radius: 14px;
+      padding: 2px;
     }
+
     .tab {
       flex: 1;
       text-align: center;
-      padding: 8px;
+      padding: 8px 0;
       font-size: 14px;
       cursor: pointer;
-    }
-    .tab.active {
-      background: white;
-      font-weight: bold;
+      border-radius: 10px;
     }
 
-    /* ===== DONUT ===== */
+    .tab.active {
+      background: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    /* ===== CHARTS CONTAINER ===== */
     .donut-box {
-      background: #f3f3f3;
-      margin-top: 15px;
+      background: #f5f5f5;
+      margin-top: 10px;
       border-radius: 20px;
-      padding: 20px;
+      padding: 18px 10px 16px;
+      overflow: hidden;
+    }
+
+    .charts-group {
+      width: 100%;
+    }
+    .charts-group.hidden {
+      display: none;
+    }
+
+    .chart-slider {
+      display: flex;
+      width: 300%;
+      transition: transform 0.3s ease;
+    }
+
+    .chart-page {
+      width: 33.3333%;
       display: flex;
       justify-content: center;
+      align-items: center;
     }
-    .donut {
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      background: conic-gradient(
-        #9ddc28 0% 45%,
-        #f056c7 45% 65%,
-        #1ccccc 65% 80%,
-        #7a40cc 80% 90%,
-        #ffd600 90% 100%
-      );
-      position: relative;
+
+    .donut-wrapper,
+    .bar-wrapper,
+    .line-wrapper {
+      text-align: center;
+      width: 100%;
     }
-    .donut::after {
-      content: "";
-      width: 110px;
-      height: 110px;
-      background: #f3f3f3;
+
+    .donut,
+    .bar-chart,
+    .line-chart {
+      width: 180px;
+      height: 120px;
+      margin: 0 auto;
+    }
+
+    .donut svg,
+    .bar-chart svg,
+    .line-chart svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-label {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chart-dots {
+      margin-top: 4px;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .chart-dot {
+      width: 4px;
+      height: 4px;
       border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      background: #cfcfcf;
+      cursor: pointer;
+    }
+
+    .chart-dot.active {
+      background: #333333;
     }
 
     /* ===== LEGEND ===== */
-    .legend {
-      margin-top: 15px;
+    .legend-card {
+      margin-top: 10px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      padding: 10px 14px 12px;
     }
+    .legend-card.hidden {
+      display: none;
+    }
+
+    .legend {
+      font-size: 13px;
+    }
+
     .legend-row {
       display: flex;
       justify-content: space-between;
-      font-size: 14px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
+    .legend-row:first-child {
+      margin-top: 0;
+    }
+
     .dot {
       width: 10px;
       height: 10px;
       border-radius: 3px;
-      margin-right: 8px;
+      margin-right: 6px;
       display: inline-block;
     }
 
@@ -134,49 +204,102 @@
       line-height: 1.4;
     }
 
-    /* ===== TASKS ===== */
+    /* ===== TASKS (РАЗВЁРНУТЫЙ СЛАЙДЕР) ===== */
     .task-card {
       margin-top: 15px;
-      background: white;
+      background: #ffffff;
       border-radius: 20px;
-      padding: 15px;
+      padding: 15px 15px 12px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      overflow: hidden;              /* прячет недели/месяцы за пределами страницы */
     }
+
     .task-title {
-      background: red;
-      color: white;
+      background: #e02020;
+      color: #ffffff;
       text-align: center;
-      border-radius: 10px;
+      border-radius: 10px;           /* как у "Анализа" */
       padding: 8px;
-      margin-bottom: 10px;
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 16px;
     }
+
+    .tasks-slider {
+      display: flex;
+      width: 300%;
+      transition: 0.3s;
+      box-sizing: border-box;
+    }
+
+    .task-page {
+      width: 33.3333%;
+      padding: 12px 16px 4px;
+      box-sizing: border-box;
+    }
+
     .task {
       display: flex;
       justify-content: space-between;
-      font-size: 14px;
-      margin-top: 10px;
+      align-items: flex-start;
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.3;
     }
+
+    .task-prefix {
+      font-weight: 700;
+    }
+
+    .task-link {
+      color: #ff3b00;
+    }
+
+    /* чекбоксы */
     .check {
+      flex: 0 0 20px;
+      min-width: 20px;
       width: 20px;
       height: 20px;
-      border-radius: 6px;
-      border: 2px solid red;
+      border-radius: 3px;
+      border: 2px solid #000000;
+      box-sizing: border-box;
       position: relative;
+      margin-left: 8px;
+      margin-top: 2px;
     }
+
     .check.active::after {
       content: "";
       position: absolute;
-      width: 6px;
+      width: 8px;
       height: 12px;
-      border: solid red;
-      border-width: 0 3px 3px 0;
-      left: 5px;
-      top: 1px;
+      border-right: 2px solid #ff3b00;
+      border-bottom: 2px solid #ff3b00;
       transform: rotate(45deg);
+      left: 3px;
+      top: 0px;
     }
 
-    /* ===== NAVBAR ===== */
+    .tasks-dots {
+      display: flex;
+      justify-content: center;
+      padding: 6px 0 6px;
+    }
+
+    .task-dot {
+      width: 6px;
+      height: 6px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+
+    .task-dot.active {
+      background: #333;
+    }
+
+    /* ===== NAVBAR (как на главном экране) ===== */
     .navbar {
       position: fixed;
       bottom: 0;
@@ -185,28 +308,37 @@
       max-width: 390px;
       margin: auto;
       background: white;
-      height: 70px;
+      height: 60px;
       border-top: 1px solid #ddd;
       display: flex;
       justify-content: space-around;
       align-items: center;
     }
+
     .nav-item {
-      font-size: 11px;
+      font-size: 9px;
       text-align: center;
       color: #999;
-    }
-    .nav-item.active {
-      color: black;
-      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
     }
 
-    .icon {
-      width: 22px;
-      height: 22px;
-      background: #999;
-      border-radius: 6px;
-      margin: auto auto 4px;
+    .nav-item.active {
+      color: #000;
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
     }
   </style>
 </head>
@@ -216,26 +348,238 @@
 
   <!-- HEADER -->
   <div class="header">
-    <div class="back" onclick="location.href='index.html'">‹</div>
+    <div class="back" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="20" y1="12" x2="4" y2="12"/>
+        <polyline points="10 6 4 12 10 18"/>
+      </svg>
+    </div>
     Аналитика
   </div>
 
-  <!-- TABS -->
-  <div class="tabs">
-    <div class="tab active">Доходы</div>
-    <div class="tab">Расходы</div>
+  <!-- TABS CARD -->
+  <div class="tabs-card">
+    <div class="tabs">
+      <div class="tab active" data-type="income">Доходы</div>
+      <div class="tab" data-type="expense">Расходы</div>
+    </div>
   </div>
 
-  <!-- DONUT -->
+  <!-- CHARTS: ДОХОДЫ / РАСХОДЫ -->
   <div class="donut-box">
-    <div class="donut"></div>
+
+    <!-- Группа: ДОХОДЫ -->
+    <div class="charts-group" id="chartsIncome">
+      <div class="chart-slider" id="chartSliderIncome">
+        <!-- Страница 1: круговая по доходам -->
+        <div class="chart-page">
+          <div class="donut-wrapper">
+            <div class="donut">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <path fill="#FACC15"
+                      d="M 41.88 4.05 A 36 36 0 0 1 53.49 6.62 L 48.99 17.75 A 24 24 0 0 0 41.26 16.03 Z" />
+                <path fill="#A3E635"
+                      d="M 56.90 8.21 A 36 36 0 0 1 31.90 75.08 L 34.60 63.38 A 24 24 0 0 0 51.27 18.81 Z" />
+                <path fill="#22D3EE"
+                      d="M 28.28 74.04 A 36 36 0 0 1 10.88 61.16 L 20.58 54.11 A 24 24 0 0 0 32.19 62.69 Z" />
+                <path fill="#2563EB"
+                      d="M 8.82 58.00 A 36 36 0 0 1 4.14 36.86 L 16.09 37.91 A 24 24 0 0 0 19.22 52.00 Z" />
+                <path fill="#A855F7"
+                      d="M 4.66 33.13 A 36 36 0 0 1 14.99 14.10 L 23.33 22.74 A 24 24 0 0 0 16.44 35.42 Z" />
+                <path fill="#F472B6"
+                      d="M 17.84 11.63 A 36 36 0 0 1 38.12 4.05 L 38.74 16.03 A 24 24 0 0 0 25.22 21.09 Z" />
+              </svg>
+            </div>
+            <div class="chart-label">Доходы</div>
+          </div>
+        </div>
+
+        <!-- Страница 2: столбцы доходов -->
+        <div class="chart-page">
+          <div class="bar-wrapper">
+            <div class="bar-chart">
+              <svg viewBox="0 0 180 120" aria-hidden="true">
+                <line x1="20" y1="10" x2="20" y2="100" stroke="#000" stroke-width="2"/>
+                <line x1="20" y1="100" x2="165" y2="100" stroke="#000" stroke-width="2"/>
+                <polyline points="20,10 18,16 22,16" fill="none" stroke="#000" stroke-width="1.5"/>
+                <polyline points="165,100 159,98 159,102" fill="none" stroke="#000" stroke-width="1.5"/>
+                <rect x="32" y="40" width="20" height="60" fill="#A3E635"/>
+                <rect x="60" y="65" width="18" height="35" fill="#22D3EE"/>
+                <rect x="86" y="72" width="18" height="28" fill="#A855F7"/>
+                <rect x="112" y="76" width="18" height="24" fill="#F472B6"/>
+                <rect x="138" y="78" width="18" height="22" fill="#FACC15"/>
+              </svg>
+            </div>
+            <div class="chart-label">Доходы</div>
+          </div>
+        </div>
+
+        <!-- Страница 3: линии доходов -->
+        <div class="chart-page">
+          <div class="line-wrapper">
+            <div class="line-chart">
+              <svg viewBox="0 0 180 120" aria-hidden="true">
+                <line x1="20" y1="10" x2="20" y2="100" stroke="#000" stroke-width="2"/>
+                <line x1="20" y1="100" x2="165" y2="100" stroke="#000" stroke-width="2"/>
+                <polyline points="20,10 18,16 22,16" fill="none" stroke="#000" stroke-width="1.5"/>
+                <polyline points="165,100 159,98 159,102" fill="none" stroke="#000" stroke-width="1.5"/>
+                <path d="M25 80 C50 70 70 72 95 70 C120 68 140 60 165 55"
+                      fill="none" stroke="#A3E635" stroke-width="2.5"/>
+                <path d="M25 82 C50 76 70 75 95 74 C120 72 140 66 165 62"
+                      fill="none" stroke="#22D3EE" stroke-width="2.5"/>
+                <path d="M25 85 C50 82 70 81 95 80 C120 79 140 78 165 76"
+                      fill="none" stroke="#F472B6" stroke-width="2"/>
+                <path d="M25 86 C50 84 70 83 95 82 C120 81 140 80 165 79"
+                      fill="none" stroke="#A855F7" stroke-width="2"/>
+                <path d="M25 78 C50 74 70 73 95 72 C120 70 140 69 165 68"
+                      fill="none" stroke="#2563EB" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="chart-label">Доходы</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-dots">
+        <span class="chart-dot chart-dot-income active"></span>
+        <span class="chart-dot chart-dot-income"></span>
+        <span class="chart-dot chart-dot-income"></span>
+      </div>
+    </div>
+
+    <!-- Группа: РАСХОДЫ -->
+    <div class="charts-group hidden" id="chartsExpense">
+      <div class="chart-slider" id="chartSliderExpense">
+        <!-- Страница 1: круговая расходы -->
+        <div class="chart-page">
+          <div class="donut-wrapper">
+            <div class="donut">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <path fill="#A3E635"
+                      d="M 40.00 4.00
+                         A 36 36 0 0 1 76.00 40.00
+                         L 64.00 40.00
+                         A 24 24 0 0 0 40.00 16.00 Z" />
+                <path fill="#2563EB"
+                      d="M 75.80 43.76
+                         A 36 36 0 0 1 69.12 61.16
+                         L 59.42 54.11
+                         A 24 24 0 0 0 63.87 42.51 Z" />
+                <path fill="#22D3EE"
+                      d="M 66.75 64.09
+                         A 36 36 0 0 1 38.74 75.98
+                         L 39.16 63.99
+                         A 24 24 0 0 0 57.84 56.06 Z" />
+                <path fill="#8B5CF6"
+                      d="M 34.99 75.65
+                         A 36 36 0 0 1 4.79 47.48
+                         L 16.52 44.99
+                         A 24 24 0 0 0 36.66 63.77 Z" />
+                <path fill="#F472B6"
+                      d="M 4.20 43.76
+                         A 36 36 0 0 1 7.11 25.36
+                         L 18.07 30.24
+                         A 24 24 0 0 0 16.13 42.51 Z" />
+                <path fill="#FACC15"
+                      d="M 8.82 22.00
+                         A 36 36 0 0 1 36.24 4.20
+                         L 37.49 16.13
+                         A 24 24 0 0 0 19.22 28.00 Z" />
+              </svg>
+            </div>
+            <div class="chart-label">Расходы</div>
+          </div>
+        </div>
+
+        <!-- Страница 2: столбцы расходов -->
+        <div class="chart-page">
+          <div class="bar-wrapper">
+            <div class="bar-chart">
+              <svg viewBox="0 0 180 120" aria-hidden="true">
+                <line x1="20" y1="10" x2="20" y2="100" stroke="#000" stroke-width="2"/>
+                <line x1="20" y1="100" x2="165" y2="100" stroke="#000" stroke-width="2"/>
+                <polyline points="20,10 18,16 22,16" fill="none" stroke="#000" stroke-width="1.5"/>
+                <polyline points="165,100 159,98 159,102" fill="none" stroke="#000" stroke-width="1.5"/>
+                <rect x="32" y="55" width="20" height="45" fill="#2563EB"/>
+                <rect x="60" y="62" width="18" height="38" fill="#22D3EE"/>
+                <rect x="86" y="70" width="18" height="30" fill="#8B5CF6"/>
+                <rect x="112" y="74" width="18" height="26" fill="#F472B6"/>
+                <rect x="138" y="80" width="18" height="20" fill="#FACC15"/>
+              </svg>
+            </div>
+            <div class="chart-label">Расходы</div>
+          </div>
+        </div>
+
+        <!-- Страница 3: линии расходов -->
+        <div class="chart-page">
+          <div class="line-wrapper">
+            <div class="line-chart">
+              <svg viewBox="0 0 180 120" aria-hidden="true">
+                <line x1="20" y1="10" x2="20" y2="100" stroke="#000" stroke-width="2"/>
+                <line x1="20" y1="100" x2="165" y2="100" stroke="#000" stroke-width="2"/>
+                <polyline points="20,10 18,16 22,16" fill="none" stroke="#000" stroke-width="1.5"/>
+                <polyline points="165,100 159,98 159,102" fill="none" stroke="#000" stroke-width="1.5"/>
+
+                <path d="M25 60 C45 55 70 57 95 62 C120 68 140 75 165 80"
+                      fill="none" stroke="#A3E635" stroke-width="2.5"/>
+                <path d="M25 70 C50 68 75 70 100 73 C125 76 145 78 165 79"
+                      fill="none" stroke="#2563EB" stroke-width="2.5"/>
+                <path d="M25 75 C45 74 70 75 95 78 C120 81 140 84 165 86"
+                      fill="none" stroke="#22D3EE" stroke-width="2"/>
+                <path d="M25 78 C48 80 72 82 100 83 C128 84 148 86 165 87"
+                      fill="none" stroke="#8B5CF6" stroke-width="2"/>
+                <path d="M25 72 C48 70 72 71 95 72 C120 74 142 75 165 76"
+                      fill="none" stroke="#F472B6" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="chart-label">Расходы</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-dots">
+        <span class="chart-dot chart-dot-expense active"></span>
+        <span class="chart-dot chart-dot-expense"></span>
+        <span class="chart-dot chart-dot-expense"></span>
+      </div>
+    </div>
   </div>
 
-  <!-- LEGEND -->
-  <div class="legend">
-    <div class="legend-row"><span><span class="dot" style="background:#1ccccc"></span>Переводы</span><span><span class="dot" style="background:#9ddc28"></span>Зарплата</span></div>
-    <div class="legend-row"><span><span class="dot" style="background:#7a40cc"></span>Лотерея</span><span><span class="dot" style="background:#ffd600"></span>Кэшбек</span></div>
-    <div class="legend-row"><span><span class="dot" style="background:#f056c7"></span>Бизнес</span></div>
+  <!-- LEGEND: ДОХОДЫ -->
+  <div class="legend-card" id="legendIncome">
+    <div class="legend">
+      <div class="legend-row">
+        <span><span class="dot" style="background:#1ccccc"></span>Переводы</span>
+        <span><span class="dot" style="background:#9ddc28"></span>Зарплата</span>
+      </div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:#7a40cc"></span>Лотерея</span>
+        <span><span class="dot" style="background:#ffd600"></span>Кэшбек</span>
+      </div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:#f056c7"></span>Бизнес</span>
+        <span><span class="dot" style="background:#2563EB"></span>Дивиденды</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND: РАСХОДЫ -->
+  <div class="legend-card hidden" id="legendExpense">
+    <div class="legend">
+      <div class="legend-row">
+        <span><span class="dot" style="background:#2563EB"></span>Развлечения</span>
+        <span><span class="dot" style="background:#A3E635"></span>КУ</span>
+      </div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:#22D3EE"></span>Одежда</span>
+        <span><span class="dot" style="background:#F472B6"></span>Такси</span>
+      </div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:#8B5CF6"></span>Еда</span>
+        <span><span class="dot" style="background:#FACC15"></span>Кофе</span>
+      </div>
+    </div>
   </div>
 
   <!-- ANALYSIS -->
@@ -247,33 +591,284 @@
     </div>
   </div>
 
-  <!-- TASKS -->
+  <!-- TASKS: РАЗВЁРНУТЫЙ СЛАЙДЕР -->
   <div class="task-card">
-    <div class="task-title">Задания на день</div>
+    <div class="task-title" id="tasksTitle">Задания дня</div>
 
-    <div class="task">
-      <span>Пройдите урок в разделе Обучение</span>
-      <div class="check active"></div>
+    <div class="tasks-slider" id="tasksSlider">
+      <!-- День -->
+      <div class="task-page" data-type="day">
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 1:</span>
+            Пройдите урок в разделе <span class="task-link">Обучение</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 2:</span>
+            Внесите 100 рублей на свой <span class="task-link">сберегательный счет</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 3:</span>
+            Прочитайте финансовые рекомендации в разделе
+            <span class="task-link">Планирование</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+      </div>
+
+      <!-- Неделя -->
+      <div class="task-page" data-type="week">
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 1:</span>
+            Завершите 3 главы в разделе <span class="task-link">Обучение</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 2:</span>
+            Сократите еженедельные траты минимум на
+            <span class="task-link">10%</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 3:</span>
+            Пройдите один шаг на пути к вершине в разделе
+            <span class="task-link">Мой Аверест</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+      </div>
+
+      <!-- Месяц -->
+      <div class="task-page" data-type="month">
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 1:</span>
+            Распределите месячный доход по целям в разделе
+            <span class="task-link">Планирование</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 2:</span>
+            Пополните долгосрочные накопления минимум на
+            <span class="task-link">5 000 ₽</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+        <div class="task">
+          <span>
+            <span class="task-prefix">Задача 3:</span>
+            Станьте легендой: Покорите
+            <span class="task-link">Аверест</span>
+          </span>
+          <div class="check active"></div>
+        </div>
+      </div>
     </div>
-    <div class="task">
-      <span>Внесите 100 рублей</span>
-      <div class="check active"></div>
-    </div>
-    <div class="task">
-      <span>Прочитайте рекомендацию</span>
-      <div class="check active"></div>
+
+    <div class="tasks-dots">
+      <span class="task-dot active"></span>
+      <span class="task-dot"></span>
+      <span class="task-dot"></span>
     </div>
   </div>
 </div>
 
-<!-- NAVBAR -->
+<!-- NAVBAR (как на главной) -->
 <div class="navbar">
-  <div class="nav-item active"><div class="icon"></div>Главная</div>
-  <div class="nav-item"><div class="icon"></div>Платежи</div>
-  <div class="nav-item"><div class="icon"></div>Выгода</div>
-  <div class="nav-item"><div class="icon"></div>История</div>
-  <div class="nav-item"><div class="icon"></div>Чаты</div>
+  <div class="nav-item active">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/>
+      </svg>
+    </div>
+    <div class="nav-label">Главная</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 7H4V5h16v2zm0 4H4V9h16v2zm0 4H4v-2h16v2zm0 4H4v-2h16v2z"/>
+      </svg>
+    </div>
+    <div class="nav-label">Платежи</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.02 4.02 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 17.98 4 20 6.02 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </div>
+    <div class="nav-label">Выгода</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M11 7h2v6h-2V7zm1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+      </svg>
+    </div>
+    <div class="nav-label">История</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 4h16v10H5.17L4 15.17V4zm0-2C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4z"/>
+      </svg>
+    </div>
+    <div class="nav-label">Чаты</div>
+  </div>
 </div>
+
+<script>
+  /* ===== СЛАЙДЕРЫ ГРАФИКОВ ===== */
+  function setupChartSlider(sliderId, dotsSelector) {
+    let index = 0;
+    const slider = document.getElementById(sliderId);
+    const dots = document.querySelectorAll(dotsSelector);
+    const maxIndex = 2;
+
+    function update() {
+      slider.style.transform = `translateX(-${index * 33.3333}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        index = i;
+        update();
+      });
+    });
+
+    // свайп touch
+    let startXTouch = 0;
+    slider.addEventListener('touchstart', e => {
+      startXTouch = e.touches[0].clientX;
+    });
+    slider.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].clientX - startXTouch;
+      const threshold = 40;
+      if (diff < -threshold && index < maxIndex) index++;
+      if (diff > threshold && index > 0) index--;
+      update();
+    });
+
+    // свайп мышью
+    let mouseDown = false;
+    let startXMouse = 0;
+    slider.addEventListener('mousedown', e => {
+      mouseDown = true;
+      startXMouse = e.clientX;
+    });
+    document.addEventListener('mouseup', e => {
+      if (!mouseDown) return;
+      mouseDown = false;
+      const diff = e.clientX - startXMouse;
+      const threshold = 40;
+      if (diff < -threshold && index < maxIndex) index++;
+      if (diff > threshold && index > 0) index--;
+      update();
+    });
+
+    update();
+    return { reset: () => { index = 0; update(); } };
+  }
+
+  const incomeSlider = setupChartSlider('chartSliderIncome', '.chart-dot-income');
+  const expenseSlider = setupChartSlider('chartSliderExpense', '.chart-dot-expense');
+
+  /* ===== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ДОХОДЫ / РАСХОДЫ ===== */
+  const tabs = document.querySelectorAll('.tab');
+  const chartsIncome = document.getElementById('chartsIncome');
+  const chartsExpense = document.getElementById('chartsExpense');
+  const legendIncome = document.getElementById('legendIncome');
+  const legendExpense = document.getElementById('legendExpense');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const type = tab.getAttribute('data-type');
+      if (type === 'income') {
+        chartsIncome.classList.remove('hidden');
+        chartsExpense.classList.add('hidden');
+        legendIncome.classList.remove('hidden');
+        legendExpense.classList.add('hidden');
+        incomeSlider.reset();
+      } else {
+        chartsIncome.classList.add('hidden');
+        chartsExpense.classList.remove('hidden');
+        legendIncome.classList.add('hidden');
+        legendExpense.classList.remove('hidden');
+        expenseSlider.reset();
+      }
+    });
+  });
+
+  /* ===== СЛАЙДЕР ЗАДАНИЙ (ВСЕГДА РАЗВЁРНУТО) ===== */
+  let taskIndex = 0;
+  const tasksSlider = document.getElementById('tasksSlider');
+  const taskDots = document.querySelectorAll('.task-dot');
+  const tasksTitle = document.getElementById('tasksTitle');
+  const taskTitles = ['Задания дня', 'Задания недели', 'Задания месяца'];
+  const tasksMaxIndex = 2;
+
+  function updateTasksSlider() {
+    tasksSlider.style.transform = `translateX(-${taskIndex * 33.3333}%)`;
+    taskDots.forEach((d, i) => d.classList.toggle('active', i === taskIndex));
+    tasksTitle.textContent = taskTitles[taskIndex];
+  }
+
+  taskDots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      taskIndex = i;
+      updateTasksSlider();
+    });
+  });
+
+  // свайп touch
+  let startTaskTouch = 0;
+  tasksSlider.addEventListener('touchstart', e => {
+    startTaskTouch = e.touches[0].clientX;
+  });
+  tasksSlider.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - startTaskTouch;
+    const threshold = 40;
+    if (diff < -threshold && taskIndex < tasksMaxIndex) taskIndex++;
+    if (diff > threshold && taskIndex > 0) taskIndex--;
+    updateTasksSlider();
+  });
+
+  // свайп мышью
+  let taskMouseDown = false;
+  let startTaskMouse = 0;
+  tasksSlider.addEventListener('mousedown', e => {
+    taskMouseDown = true;
+    startTaskMouse = e.clientX;
+  });
+  document.addEventListener('mouseup', e => {
+    if (!taskMouseDown) return;
+    taskMouseDown = false;
+    const diff = e.clientX - startTaskMouse;
+    const threshold = 40;
+    if (diff < -threshold && taskIndex < tasksMaxIndex) taskIndex++;
+    if (diff > threshold && taskIndex > 0) taskIndex--;
+    updateTasksSlider();
+  });
+
+  updateTasksSlider();
+</script>
 
 </body>
 </html>

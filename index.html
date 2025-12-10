@@ -216,8 +216,6 @@ h1 span {
   top: 0px;
 }
 
-
-
 /* точки */
 .dots {
   display: flex;
@@ -257,6 +255,7 @@ h1 span {
   align-items: flex-start;
   position: relative;
   overflow: hidden;
+  cursor: pointer; /* чтобы было видно, что кликабельно */
 }
 
 .finance-text {
@@ -300,12 +299,63 @@ h1 span {
   overflow: hidden;
 }
 
+.finance-link {
+  text-decoration: none;
+}
+
+.finance-card.blue {
+  cursor: pointer; /* календарь кликабелен */
+}
+
 .blue {
   background: linear-gradient(135deg, #6366f1, #3b82f6);
 }
 
 .green {
   background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+/* ===== МОДАЛЬНОЕ ОКНО КАЛЕНДАРЯ ===== */
+.calendar-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.calendar-modal-content {
+  width: 100%;
+  max-width: 390px;
+  height: 100%;
+  background: #ffffff;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.calendar-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.calendar-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
 }
 
 /* ===== НИЖНЕЕ МЕНЮ ===== */
@@ -587,22 +637,30 @@ h1 span {
   <!-- ===== РАЗДЕЛЫ ===== -->
   <div class="finance-title">Ваше финздоровье</div>
 
-  <div class="finance-main">
+  <div class="finance-main" id="financeMain">
     <div class="finance-text">Планирование и накопления</div>
     <img src="plan.png" alt="" class="finance-illustration finance-illustration-main">
   </div>
 
   <div class="finance-grid">
-    <div class="finance-card blue">
+    <div class="finance-card blue" id="calendarCard">
       <div class="finance-text">Календарь поступлений</div>
       <img src="calendar.png" alt="" class="finance-illustration">
     </div>
-    <div class="finance-card green">
+    <a href="study.html" class="finance-card green finance-link">
       <div class="finance-text">Обучение финздоровью</div>
       <img src="study.png" alt="" class="finance-illustration">
-    </div>
+    </a>
   </div>
 
+</div>
+
+<!-- МОДАЛЬНЫЙ КАЛЕНДАРЬ -->
+<div class="calendar-modal" id="calendarModal">
+  <div class="calendar-modal-content">
+    <button class="calendar-close" id="calendarClose">×</button>
+    <iframe src="calendar.html" class="calendar-iframe"></iframe>
+  </div>
 </div>
 
 <!-- ===== МЕНЮ ===== -->
@@ -714,6 +772,35 @@ updateSlider();
 document.getElementById("chartsCard").onclick = () => {
   location.href = "analytics.html";
 };
+
+/* переход в планирование и накопления */
+const financeMain = document.getElementById('financeMain');
+if (financeMain) {
+  financeMain.addEventListener('click', () => {
+    location.href = 'finance.html';
+  });
+}
+
+/* всплывающее окно календаря */
+const calendarCard = document.getElementById('calendarCard');
+const calendarModal = document.getElementById('calendarModal');
+const calendarClose = document.getElementById('calendarClose');
+
+if (calendarCard && calendarModal && calendarClose) {
+  calendarCard.addEventListener('click', () => {
+    calendarModal.style.display = 'flex';
+  });
+
+  calendarClose.addEventListener('click', () => {
+    calendarModal.style.display = 'none';
+  });
+
+  calendarModal.addEventListener('click', (e) => {
+    if (e.target === calendarModal) {
+      calendarModal.style.display = 'none';
+    }
+  });
+}
 </script>
 
 </body>

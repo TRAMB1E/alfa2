@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Урок</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #000;
+    }
+
+    .app {
+      max-width: 390px;
+      margin: auto;
+      min-height: 100vh;
+      padding: 16px 15px 90px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .header-top {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      margin-right: 4px;
+    }
+
+    .back svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .module-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #d81717;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* SPEECH BUBBLE */
+    .speech-wrapper {
+      position: relative;
+      width: 100%;
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .speech-bubble {
+      width: 85%;
+      max-width: 310px;
+      position: relative;
+    }
+
+    .speech-bubble img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .speech-text {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 75%;
+      text-align: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    /* MASCOT */
+    .mascot {
+      width: 200px;
+      margin: 0 auto;
+      margin-top: -90px;
+    }
+
+    .mascot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 390px;
+      margin: auto;
+      background: #ffffff;
+      height: 60px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .nav-item {
+      font-size: 9px;
+      text-align: center;
+      color: #999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .nav-item.active {
+      color: #000;
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <button class="back" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="20" y1="12" x2="4" y2="12"/>
+          <polyline points="10 6 4 12 10 18"/>
+        </svg>
+      </button>
+      Урок
+    </div>
+    <div class="module-title">Модуль 1, Урок 2</div>
+  </header>
+
+  <!-- SPEECH BUBBLE -->
+  <div class="speech-wrapper">
+    <div class="speech-bubble">
+      <img src="speech_bubble_lesson.png" alt="Облако">
+      <div class="speech-text">
+        Привет!<br>
+        Давай начнём<br>
+        наш урок с того,<br>
+        что…
+      </div>
+    </div>
+  </div>
+
+  <!-- MASCOT -->
+  <div class="mascot">
+    <img src="mascot_lesson.png" alt="Маскот урока">
+  </div>
+
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-item active">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>
+    </div>
+    Главная
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 7H4V5h16v2zm0 4H4V9h16v2zm0 4H4v-2h16v2zm0 4H4v-2h16v2z"/></svg>
+    </div>
+    Платежи
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.02 4.02 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 17.98 4 20 6.02 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    Выгода
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M11 7h2v6h-2V7zm1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+    </div>
+    История
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v10H5.17L4 15.17V4zm0-2C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4z"/></svg>
+    </div>
+    Чаты
+  </div>
+</nav>
+
+</body>
+</html>

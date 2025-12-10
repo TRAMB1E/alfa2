@@ -204,21 +204,21 @@
       line-height: 1.4;
     }
 
-    /* ===== TASKS (РАЗВЁРНУТЫЙ СЛАЙДЕР) ===== */
+    /* ===== TASKS (СЛАЙДЕР) ===== */
     .task-card {
       margin-top: 15px;
       background: #ffffff;
       border-radius: 20px;
       padding: 15px 15px 12px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-      overflow: hidden;              /* прячет недели/месяцы за пределами страницы */
+      overflow: hidden;              /* прячем соседние страницы */
     }
 
     .task-title {
       background: #e02020;
       color: #ffffff;
       text-align: center;
-      border-radius: 10px;           /* как у "Анализа" */
+      border-radius: 10px;
       padding: 8px;
       font-weight: 700;
       font-size: 16px;
@@ -226,13 +226,13 @@
 
     .tasks-slider {
       display: flex;
-      width: 300%;
       transition: 0.3s;
       box-sizing: border-box;
     }
 
     .task-page {
-      width: 33.3333%;
+      flex: 0 0 100%;
+      max-width: 100%;
       padding: 12px 16px 4px;
       box-sizing: border-box;
     }
@@ -591,7 +591,7 @@
     </div>
   </div>
 
-  <!-- TASKS: РАЗВЁРНУТЫЙ СЛАЙДЕР -->
+  <!-- TASKS: СЛАЙДЕР -->
   <div class="task-card">
     <div class="task-title" id="tasksTitle">Задания дня</div>
 
@@ -686,7 +686,7 @@
   </div>
 </div>
 
-<!-- NAVBAR (как на главной) -->
+<!-- NAVBAR -->
 <div class="navbar">
   <div class="nav-item active">
     <div class="nav-icon">
@@ -816,7 +816,7 @@
     });
   });
 
-  /* ===== СЛАЙДЕР ЗАДАНИЙ (ВСЕГДА РАЗВЁРНУТО) ===== */
+  /* ===== СЛАЙДЕР ЗАДАНИЙ ===== */
   let taskIndex = 0;
   const tasksSlider = document.getElementById('tasksSlider');
   const taskDots = document.querySelectorAll('.task-dot');
@@ -825,7 +825,7 @@
   const tasksMaxIndex = 2;
 
   function updateTasksSlider() {
-    tasksSlider.style.transform = `translateX(-${taskIndex * 33.3333}%)`;
+    tasksSlider.style.transform = `translateX(-${taskIndex * 100}%)`;
     taskDots.forEach((d, i) => d.classList.toggle('active', i === taskIndex));
     tasksTitle.textContent = taskTitles[taskIndex];
   }

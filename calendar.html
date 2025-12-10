@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Календарь движения денег</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+        sans-serif;
+        background: rgba(0, 0, 0, 0.6); /* полупрозрачный фон */
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---- App wrapper (сама модалка) ---- */
+
+    .app {
+      width: 360px;
+      max-width: 100%;
+      padding: 24px 16px;
+      border-radius: 24px;
+      background: #222;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: app-pop 450ms ease-out;
+    }
+
+    @keyframes app-pop {
+      from {
+        transform: translateY(18px) scale(0.96);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* ---- Header ---- */
+
+    .app-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;   /* заголовок по центру */
+      margin-bottom: 18px;
+      color: #e0e0e0;
+      font-size: 11px;
+      opacity: 0.7;
+      position: relative;        /* чтобы позиционировать стрелку */
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: absolute;        /* слева от заголовка */
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      overflow: hidden;
+    }
+
+    .back-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle, rgba(255,255,255,0.12), transparent);
+      opacity: 0;
+      transform: scale(0.4);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .back-btn:hover::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .back-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: #f5f5f5;
+      stroke-width: 2.2;
+      fill: none;
+    }
+
+    .app-title {
+      font-size: 10px;
+      text-transform: lowercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    /* ---- Card ---- */
+
+    .card {
+      width: 100%;
+      border-radius: 20px;
+      background: #ebebee;
+      padding: 18px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: card-slide 400ms 120ms ease-out backwards;
+    }
+
+    @keyframes card-slide {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ---- Month header ---- */
+
+    .month-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 10px;
+    }
+
+    .month-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #3a3a3a;
+    }
+
+    .month-nav {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 120ms ease, transform 120ms ease;
+    }
+
+    .month-nav svg {
+      width: 14px;
+      height: 14px;
+      stroke: #777;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .month-nav:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .month-nav:active {
+      transform: scale(0.94);
+    }
+
+    /* ---- Calendar ---- */
+
+    .calendar {
+      position: relative;
+      padding: 0 4px 10px;
+      border-radius: 16px;
+      background: #fdfdfd;
+    }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e53935;
+      color: #fff;
+      border-radius: 12px;
+      padding: 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 16px;
+      column-gap: 4px;
+      font-size: 13px;
+      padding: 4px 4px 2px;
+    }
+
+    .day {
+      border: none;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      height: 34px;
+      color: #565656;
+      transition: transform 120ms ease, color 120ms ease;
+    }
+
+    .day.disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .day-number {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .day:hover {
+      transform: translateY(-1px);
+      color: #111;
+    }
+
+    .day.selected .day-number {
+      font-weight: 700;
+    }
+
+    .day-events {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .dot.salary   { background: #0ea768; }
+    .dot.okko     { background: #e91e63; }
+    .dot.credit   { background: #ff9800; }
+    .dot.rent     { background: #fdd835; }
+
+    /* ---- Legend ---- */
+
+    .legend {
+      margin-top: 12px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 10px 10px 8px;
+      font-size: 11px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.salary   { background: #0ea768; }
+    .legend-dot.okko     { background: #e91e63; }
+    .legend-dot.credit   { background: #ff9800; }
+    .legend-dot.rent     { background: #fdd835; }
+
+    /* ---- Selected day info ---- */
+
+    .selected-info {
+      font-size: 11px;
+      margin-top: 6px;
+      min-height: 16px;
+      color: #4b5563;
+      transition: opacity 160ms ease;
+    }
+
+    .selected-info span {
+      font-weight: 600;
+    }
+
+    /* ---- Button ---- */
+
+    .add-section {
+      margin-top: 10px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .add-btn {
+      border: none;
+      background: transparent;
+      color: #e53935;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      padding: 8px 14px;
+      border-radius: 999px;
+    }
+
+    .add-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle, rgba(229,57,53,0.25), transparent 60%);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 200ms ease, opacity 200ms ease;
+    }
+
+    .add-btn:active::before {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .add-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* ---- Responsive ---- */
+
+    @media (max-width: 420px) {
+      body {
+        align-items: stretch;
+      }
+      .app {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .card {
+        margin-top: 6px;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .legend {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+  <button class="back-btn" aria-label="Назад">
+    <svg viewBox="0 0 24 24">
+      <polyline points="15 6 9 12 15 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+    </svg>
+  </button>
+  <div class="app-title">календарь движения денег</div>
+</header>
+
+
+    <main class="card">
+      <div class="month-header">
+        <button class="month-nav" id="prev-month" aria-label="Предыдущий месяц">
+          <svg viewBox="0 0 24 24">
+            <polyline points="14 6 10 12 14 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+        </button>
+        <div class="month-title" id="month-name">Январь</div>
+        <button class="month-nav" id="next-month" aria-label="Следующий месяц">
+          <svg viewBox="0 0 24 24">
+            <polyline points="10 6 14 12 10 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <section class="calendar" aria-label="Календарь">
+        <div class="weekdays">
+          <div>П</div>
+          <div>В</div>
+          <div>С</div>
+          <div>Ч</div>
+          <div>П</div>
+          <div>С</div>
+          <div>В</div>
+        </div>
+        <div class="days" id="days"></div>
+      </section>
+
+      <div class="selected-info" id="selected-info"></div>
+
+      <section class="legend">
+        <div class="legend-item">
+          <span class="legend-dot salary"></span>
+          <span>Зарплата</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot okko"></span>
+          <span>Подписка OKKO</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot rent"></span>
+          <span>Оплата жилья</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot credit"></span>
+          <span>% по кредиту</span>
+        </div>
+      </section>
+
+      <section class="add-section">
+        <button class="add-btn" type="button">Добавить событие</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const MONTHS = [
+      "Январь",
+      "Февраль",
+      "Март",
+      "Апрель",
+      "Май",
+      "Июнь",
+      "Июль",
+      "Август",
+      "Сентябрь",
+      "Октябрь",
+      "Ноябрь",
+      "Декабрь"
+    ];
+
+    // События по месяцам (пример под твой скрин: 6, 17, 19, 25 января)
+    const eventsByMonth = {
+      0: {
+        6:  [{ type: "salary", label: "Зарплата" }],
+        17: [{ type: "salary", label: "Зарплата" }],
+        19: [{ type: "credit", label: "% по кредиту" }],
+        25: [{ type: "okko", label: "Подписка OKKO" }]
+      }
+    };
+
+    const typeOrder = ["salary", "okko", "credit", "rent"];
+
+    const daysContainer = document.getElementById("days");
+    const info = document.getElementById("selected-info");
+    const monthNameEl = document.getElementById("month-name");
+    const prevBtn = document.getElementById("prev-month");
+    const nextBtn = document.getElementById("next-month");
+
+    let currentYear = 2025;
+    let currentMonth = 0; // январь
+
+    function renderCalendar(year, month) {
+      daysContainer.innerHTML = "";
+      info.textContent = "";
+      monthNameEl.textContent = MONTHS[month];
+
+      const eventsMap = eventsByMonth[month] || {};
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const offset = (firstDay + 6) % 7; // чтобы понедельник был первым столбцом
+
+      // пустые ячейки до начала месяца
+      for (let i = 0; i < offset; i++) {
+        const empty = document.createElement("button");
+        empty.className = "day disabled";
+        empty.type = "button";
+        daysContainer.appendChild(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement("button");
+        dayEl.type = "button";
+        dayEl.className = "day";
+
+        const num = document.createElement("div");
+        num.className = "day-number";
+        num.textContent = day;
+        dayEl.appendChild(num);
+
+        const events = eventsMap[day];
+        const eventsContainer = document.createElement("div");
+        eventsContainer.className = "day-events";
+
+        if (events) {
+          events
+            .slice()
+            .sort(
+              (a, b) =>
+                typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type)
+            )
+            .forEach((ev) => {
+              const dot = document.createElement("span");
+              dot.className = "dot " + ev.type;
+              eventsContainer.appendChild(dot);
+            });
+        }
+
+        dayEl.appendChild(eventsContainer);
+        daysContainer.appendChild(dayEl);
+
+        dayEl.addEventListener("click", () => {
+          document
+            .querySelectorAll(".day.selected")
+            .forEach((d) => d.classList.remove("selected"));
+          dayEl.classList.add("selected");
+
+          if (events && events.length) {
+            const labels = events.map((ev) => ev.label).join(", ");
+            info.style.opacity = 0;
+            setTimeout(() => {
+              info.innerHTML =
+                "События <span>" +
+                day +
+                " " +
+                MONTHS[month].toLowerCase() +
+                "</span>: " +
+                labels;
+              info.style.opacity = 1;
+            }, 120);
+          } else {
+            info.style.opacity = 0;
+            setTimeout(() => {
+              info.textContent =
+                "Событий " +
+                day +
+                " " +
+                MONTHS[month].toLowerCase() +
+                " нет";
+              info.style.opacity = 1;
+            }, 120);
+          }
+        });
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar(currentYear, currentMonth);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar(currentYear, currentMonth);
+    });
+
+       document
+      .querySelector(".add-btn")
+      .addEventListener("click", () => {
+        alert("Здесь позже можно будет добавить форму для создания события "); 
+      });
+
+    // первый рендер
+    renderCalendar(currentYear, currentMonth);
+
+    // ====== ЛОГИКА ЗАКРЫТИЯ, КАК У МОДАЛКИ ======
+    function closeCalendar() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    }
+
+    // стрелка работает как «крестик»
+    document.querySelector(".back-btn").addEventListener("click", closeCalendar);
+
+    // клик по фону вокруг карточки — тоже закрытие
+    document.addEventListener("click", (e) => {
+      const app = document.querySelector(".app");
+      if (app && !app.contains(e.target)) {
+        closeCalendar();
+      }
+    });
+  </script>
+</body>
+</html>
+

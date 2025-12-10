@@ -978,6 +978,12 @@
   });
 
   window.addEventListener("DOMContentLoaded", () => {
+    // ЗАГРУЗКА сохранённого значения цели из localStorage
+    const savedGoal = localStorage.getItem("goalValue");
+    if (savedGoal !== null) {
+      goalInput.value = savedGoal;
+    }
+
     document.querySelectorAll(".fade-in-up").forEach((el, i) => {
       setTimeout(() => el.classList.add("visible"), 120 * i);
     });
@@ -990,7 +996,11 @@
     setTimeout(() => chartWrapper.classList.add("loaded"), 700);
   });
 
-  goalInput.addEventListener("input", recalcGoal);
+  // СОХРАНЕНИЕ значения цели в localStorage при вводе
+  goalInput.addEventListener("input", () => {
+    recalcGoal();
+    localStorage.setItem("goalValue", goalInput.value);
+  });
 
   let toastTimeout;
   function showToast(message, duration = 2100) {

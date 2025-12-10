@@ -5,18 +5,12 @@
   <title>Обучение финздоровью</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Roboto -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
   <style>
     body {
       margin: 0;
-      background: #F3F4F5; /* фон по палитре */
-      font-family: "Roboto", system-ui, -apple-system, sans-serif;
-      color: #000000;
-      font-size: 17px; /* остальной текст — 17px */
+      background: #f2f2f2;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #000;
     }
 
     .app {
@@ -24,7 +18,7 @@
       margin: auto;
       background: #ffffff;
       min-height: 100vh;
-      padding: 16px 16px 90px; /* боковые отступы — 16px */
+      padding: 16px 15px 90px;
       box-sizing: border-box;
     }
 
@@ -33,14 +27,15 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: 16px; /* расстояние между блоками — 16px */
+      gap: 2px;
+      margin-bottom: 8px;
     }
 
     .header-top {
       display: flex;
       align-items: center;
       font-weight: 700;
-      font-size: 22px; /* Заголовок — Bold 22px */
+      font-size: 20px;
     }
 
     .back {
@@ -53,7 +48,7 @@
       border: none;
       background: none;
       padding: 0;
-      margin-right: 8px;
+      margin-right: 6px;
     }
 
     .back svg {
@@ -64,53 +59,50 @@
     .header-progress {
       width: 100%;
       text-align: center;
-      font-size: 17px; /* остальной текст */
-      color: #7F7F83;  /* неактивный текст по палитре */
-      font-weight: 500;
-      margin-top: 4px;
+      font-size: 12px;
+      color: #ff3b00;
+      font-weight: 600;
+      margin-top: 2px;
     }
 
     /* ===== CARD: ТЕКУЩИЙ УРОК ===== */
     .lesson-card {
-      margin-top: 16px;
-      margin-bottom: 16px; /* расстояние между блоками — 16px */
+      margin-top: 8px;
+      margin-bottom: 14px;
     }
 
     .lesson-link {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px; /* боковые 16px */
+      padding: 8px 10px;
       background: #e02020;
-      border-radius: 24px; /* скругление блоков 24px */
+      border-radius: 12px;
       text-decoration: none;
       color: #ffffff;
-      box-shadow: 0 4px 12px #F3F4F5; /* тень цветом из палитры */
     }
 
     .lesson-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 17px;
+      gap: 2px;
+      font-size: 12px;
     }
 
     .lesson-label {
-      font-weight: 500;
-      font-size: 15px;
-      color: #F3F4F5;
-      opacity: 0.9;
+      font-weight: 600;
+      font-size: 11px;
     }
 
     .lesson-title {
       font-weight: 700;
-      font-size: 17px;
+      font-size: 13px;
     }
 
     .lesson-icon {
       flex-shrink: 0;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
     }
 
     .lesson-icon img {
@@ -121,13 +113,12 @@
 
     /* ===== ПРОГРАММА ОБУЧЕНИЯ (ДОРОЖКА) ===== */
     .timeline {
-      margin-top: 16px;
-      margin-bottom: 16px; /* расстояние между блоками — 16px */
+      margin-top: 4px;
     }
 
     .timeline-wrapper {
       position: relative;
-      padding: 4px 0 0;
+      padding: 10px 0 0;
     }
 
     .timeline-column {
@@ -143,8 +134,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      --shift: 0px;                /* горизонтальное смещение */
-      transform: translateX(var(--shift));
     }
 
     .lesson-node img {
@@ -154,19 +143,16 @@
     }
 
     .lesson-node.large {
-      width: 82px;
-      height: 82px;
+      width: 80px;
+      height: 80px;
     }
 
     .timeline-dot {
       width: 8px;
       height: 8px;
-      background: #F3F4F5;
+      background: #d3d3d3;
       border-radius: 50%;
-      margin: 6px 0;
-      position: relative;
-      transform: translateX(var(--dshift, 0px));
-      border: 1px solid #7F7F83; /* обводка по палитре */
+      margin: 4px 0;
     }
 
     .lesson-node.clickable {
@@ -174,43 +160,24 @@
     }
 
     .lesson-node.clickable:active {
-      transform: translateX(var(--shift)) scale(0.97);
+      transform: scale(0.97);
     }
-
-    /* Индивидуальные смещения узлов — ТВОИ ЗНАЧЕНИЯ */
-    .lesson-node.node-1 { --shift: 4px; }
-    .lesson-node.node-2 { --shift: -40px; }
-    .lesson-node.node-3 { --shift: -18px; }
-    .lesson-node.node-4 { --shift: 15px; }
-    .lesson-node.node-5 { --shift: 40px; }
-    .lesson-node.node-6 { --shift: 16px; }
-    .lesson-node.node-7 { --shift: -20px; }
-    .lesson-node.node-8 { --shift: -50px; }
-
-    /* Смещения точек между уроками — выровненная тропинка */
-    .timeline-dot.dot-1 { --dshift: -18px; }
-    .timeline-dot.dot-2 { --dshift: -29px; }
-    .timeline-dot.dot-3 { --dshift: -2px; }
-    .timeline-dot.dot-4 { --dshift: 28px; }
-    .timeline-dot.dot-5 { --dshift: 28px; }
-    .timeline-dot.dot-6 { --dshift: -2px; }
-    .timeline-dot.dot-7 { --dshift: -35px; }
 
     /* Персонажи */
     .mascot {
       position: absolute;
-      width: 110px;
+      width: 64px;
       height: auto;
       pointer-events: none;
     }
 
     .mascot-star {
-      right: 10px;
-      top: 150px;
+      right: 20px;
+      top: 130px;
     }
 
     .mascot-idea {
-      left: -2px;
+      left: 4px;
       bottom: 80px;
     }
 
@@ -230,7 +197,7 @@
       margin: auto;
       background: #ffffff;
       height: 60px;
-      border-top: 1px solid #7F7F83; /* обводка по палитре */
+      border-top: 1px solid #ddd;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -238,9 +205,9 @@
     }
 
     .nav-item {
-      font-size: 11px;
+      font-size: 9px;
       text-align: center;
-      color: #7F7F83; /* неактивный текст по палитре */
+      color: #999;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -248,7 +215,7 @@
     }
 
     .nav-item.active {
-      color: #000000;
+      color: #000;
       font-weight: 700;
     }
 
@@ -299,53 +266,54 @@
   <section class="timeline">
     <div class="timeline-wrapper">
 
+      <!-- Колонка с узлами -->
       <div class="timeline-column">
         <!-- Пройденный урок (красный) -->
-        <div class="lesson-node node-1">
+        <a href="lesson.html" class="lesson-node clickable">
           <img src="lesson_node_done.png" alt="Пройденный урок">
-        </div>
+        </a>
 
-        <div class="timeline-dot dot-1"></div>
+        <div class="timeline-dot"></div>
 
         <!-- Текущий урок (синяя обводка) -->
-        <a href="lesson.html" class="lesson-node clickable node-2">
+        <a href="lesson.html" class="lesson-node clickable">
           <img src="lesson_node_current.png" alt="Текущий урок">
         </a>
 
-        <div class="timeline-dot dot-2"></div>
+        <div class="timeline-dot"></div>
 
-        <!-- Следующие уроки (серые, не кликабельны) -->
-        <div class="lesson-node node-3">
+        <!-- Следующие уроки (пока не кликабельны) -->
+        <div class="lesson-node">
           <img src="lesson_node_book_gray.png" alt="Следующий урок">
         </div>
 
-        <div class="timeline-dot dot-3"></div>
+        <div class="timeline-dot"></div>
 
-        <div class="lesson-node node-4">
+        <div class="lesson-node">
           <img src="lesson_node_boxes_gray.png" alt="Урок по покупкам">
         </div>
 
-        <div class="timeline-dot dot-4"></div>
+        <div class="timeline-dot"></div>
 
-        <div class="lesson-node node-5">
+        <div class="lesson-node">
           <img src="lesson_node_cap_gray.png" alt="Урок по образованию">
         </div>
 
-        <div class="timeline-dot dot-5"></div>
+        <div class="timeline-dot"></div>
 
-        <div class="lesson-node large node-6">
+        <div class="lesson-node large">
           <img src="lesson_node_trophy.png" alt="Трофей">
         </div>
 
-        <div class="timeline-dot dot-6"></div>
+        <div class="timeline-dot"></div>
 
-        <div class="lesson-node node-7">
+        <div class="lesson-node">
           <img src="lesson_node_repeat_gray.png" alt="Повторение">
         </div>
 
-        <div class="timeline-dot dot-7"></div>
+        <div class="timeline-dot"></div>
 
-        <div class="lesson-node node-8">
+        <div class="lesson-node">
           <img src="lesson_node_book_bottom.png" alt="Финальный урок">
         </div>
       </div>

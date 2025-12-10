@@ -5,21 +5,29 @@
   <title>Урок</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      background: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
-      color: #000;
+      background: #F3F4F5; /* фон по палитре */
+      font-family: "Roboto", system-ui, -apple-system, sans-serif;
+      color: #000000;
+      font-size: 17px; /* остальной текст — 17px */
     }
 
     .app {
       max-width: 390px;
       margin: auto;
       min-height: 100vh;
-      padding: 16px 15px 90px;
+      padding: 16px 16px 90px; /* боковые отступы — 16px */
       box-sizing: border-box;
       position: relative;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0; /* скругление блока-карты */
     }
 
     /* HEADER */
@@ -27,7 +35,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 16px; /* расстояние между блоками — 16px */
     }
 
     .header-top {
@@ -35,7 +43,7 @@
       display: flex;
       align-items: center;
       font-weight: 700;
-      font-size: 20px;
+      font-size: 22px; /* Заголовок — Bold 22px */
     }
 
     .back {
@@ -48,7 +56,7 @@
       border: none;
       background: none;
       padding: 0;
-      margin-right: 4px;
+      margin-right: 8px;
     }
 
     .back svg {
@@ -57,9 +65,9 @@
     }
 
     .module-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #d81717;
+      font-size: 17px;        /* остальной текст — 17px */
+      font-weight: 500;
+      color: #7F7F83;         /* неактивный текст по палитре */
       margin-top: 4px;
       text-align: center;
     }
@@ -68,7 +76,7 @@
     .speech-wrapper {
       position: relative;
       width: 100%;
-      margin-top: 12px;
+      margin-top: 16px;       /* расстояние между блоками — 16px */
       display: flex;
       justify-content: center;
     }
@@ -77,6 +85,7 @@
       width: 85%;
       max-width: 310px;
       position: relative;
+      /* ВАЖНО: не добавляем фон/рамку/скругление — PNG-облако само по себе */
     }
 
     .speech-bubble img {
@@ -92,17 +101,16 @@
       transform: translateX(-50%);
       width: 75%;
       text-align: center;
-      color: white;
+      color: #ffffff;
       font-weight: 700;
-      font-size: 18px;
+      font-size: 17px;  /* остальной текст — 17px */
       line-height: 1.25;
     }
 
     /* MASCOT */
     .mascot {
       width: 200px;
-      margin: 0 auto;
-      margin-top: -90px;
+      margin: 16px auto 0; /* расстояние между блоками — 16px, без отрицательного отступа */
     }
 
     .mascot img {
@@ -121,7 +129,7 @@
       margin: auto;
       background: #ffffff;
       height: 60px;
-      border-top: 1px solid #ddd;
+      border-top: 1px solid #7F7F83; /* обводка по палитре */
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -129,9 +137,9 @@
     }
 
     .nav-item {
-      font-size: 9px;
+      font-size: 17px;        /* остальной текст — 17px */
       text-align: center;
-      color: #999;
+      color: #7F7F83;         /* неактивный текст по палитре */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -139,7 +147,7 @@
     }
 
     .nav-item.active {
-      color: #000;
+      color: #000000;
       font-weight: 700;
     }
 
@@ -226,7 +234,7 @@
 
   <div class="nav-item">
     <div class="nav-icon">
-      <svg viewBox="0 0 24 24"><path d="M4 4h16v10H5.17L4 15.17V4zm0-2C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v10H5.17L4 15.17V4zm0-2C2.9 2 2 2.9 2 4v18л4-4h14c1.1 0 2-.9 2-2В4c0-1.1-.9-2-2-2H4z"/></svg>
     </div>
     Чаты
   </div>

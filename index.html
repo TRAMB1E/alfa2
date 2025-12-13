@@ -28,7 +28,8 @@ body {
   transform: translateX(-50%);
   width: 18px;
   height: 18px;
-  pointer-events: none;
+  pointer-events: auto;
+cursor: pointer;
   z-index: 2;
   opacity: 0.75;
 }
@@ -751,6 +752,211 @@ h1 span {
     margin-top: 6px;
   }
 }
+/* ===== МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ СОБЫТИЯ ===== */
+.event-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; /* выше календаря */
+}
+.event-overlay.active{ display:flex; }
+
+.event-app{
+  width: 360px;
+  max-width: 100%;
+  background: #f3f4f5;
+  border-radius: 24px;
+  padding: 18px 16px 16px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  animation: cal-app-pop 450ms ease-out; /* используем твой keyframes */
+}
+
+.event-header{
+  display:flex;
+  align-items:center;
+  margin-bottom: 10px;
+}
+.event-back{
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border:none;
+  background: transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.event-back svg{
+  width: 18px;
+  height: 18px;
+  stroke:#000;
+  stroke-width:2.4;
+  fill:none;
+}
+
+.event-body{
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 14px 14px 16px;
+}
+
+.event-title{
+  text-align:center;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.event-label{
+  text-align:center;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 14px 0 8px;
+}
+
+/* сегмент "Тип события" */
+.event-type-shell{
+  background:#d9d9d9;
+  border-radius: 16px;
+  padding: 8px;
+  display:flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items:center;
+}
+.event-pill{
+  flex: 1 1 0;
+  height: 34px;
+  border-radius: 14px;
+  border:none;
+  font-weight: 700;
+  cursor:pointer;
+  color:#000;
+}
+.event-pill.income{ background:#b6ff2a; }
+.event-pill.expense{ background:#ff2a2a; }
+
+/* режим "оставить одну кнопку по центру" */
+.event-type-shell.single{
+  justify-content:center;
+}
+.event-type-shell.single .event-pill{
+  flex: 0 0 58%;
+}
+.event-pill.hidden{
+  display:none !important;
+}
+
+/* инпуты */
+.event-input{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  background: #d9d9d9;
+  padding: 0 14px;
+  font-size: 16px;
+  box-sizing:border-box;
+}
+
+/* периодичность */
+.event-dd{
+  position: relative;
+}
+.event-dd-head{
+  width: 100%;
+  min-height: 44px;
+  border-radius: 14px;
+  border:none;
+  outline:none;
+  background:#d9d9d9;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 8px 12px;
+  box-sizing:border-box;
+  cursor:pointer;
+}
+.event-dd-caret{
+  width: 18px;
+  height: 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex: 0 0 18px;
+  opacity: 0.75;
+}
+.event-dd-caret svg{
+  width: 18px; height: 18px;
+  fill:none; stroke:#000; stroke-width:2.2;
+}
+
+.event-dd-text{
+  flex: 1;
+  display:flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.event-dd-status{
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  display:none; /* показываем только когда выбран вариант */
+}
+.event-dd-value{
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.event-dd.open .event-dd-status{ display:block; }
+.event-dd.chosen .event-dd-status{ display:block; }
+.event-dd.chosen .event-dd-status{ content:""; }
+
+.event-dd-list{
+  display:none;
+  margin-top: 8px;
+}
+.event-dd.open .event-dd-list{
+  display:block;
+}
+.event-dd-option{
+  width: 100%;
+  height: 34px;
+  border-radius: 12px;
+  border:none;
+  margin: 6px 0;
+  background:#ffffff;
+  font-weight: 600;
+  cursor:pointer;
+}
+.event-dd-option.active{
+  background:#9b9b9b;
+  color:#000;
+}
+
+.event-done{
+  margin-top: 14px;
+  width: 100%;
+  height: 50px;
+  border-radius: 26px;
+  border:none;
+  background:#000;
+  color:#fff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor:pointer;
+}
+
+/* точки событий для добавленных событий */
+.cal-dot.income { background:#19c37d; }
+.cal-dot.expense{ background:#ff3b30; }
+
 </style>
 </head>
 
@@ -1127,6 +1333,61 @@ h1 span {
     </main>
   </div>
 </div>
+<!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ СОБЫТИЯ -->
+<div class="event-overlay" id="eventOverlay">
+  <div class="event-app" role="dialog" aria-modal="true">
+    <div class="event-header">
+      <button class="event-back" id="eventCloseBtn" aria-label="Назад">
+        <svg viewBox="0 0 24 24">
+          <polyline points="15 6 9 12 15 18" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+      </button>
+      <div style="flex:1;"></div>
+    </div>
+
+    <div class="event-body">
+      <div class="event-title">Тип события</div>
+
+      <div class="event-type-shell" id="eventTypeShell">
+        <button class="event-pill income" id="pillIncome" type="button">Поступление</button>
+        <button class="event-pill expense" id="pillExpense" type="button">Трата</button>
+      </div>
+
+      <div class="event-label">Сумма</div>
+      <input class="event-input" id="eventSum" type="number" inputmode="numeric" placeholder="" />
+
+      <div class="event-label">Название</div>
+      <input class="event-input" id="eventName" type="text" placeholder="" />
+
+      <div class="event-label">Дата операции</div>
+      <input class="event-input" id="eventDate" type="text" placeholder="xx.xx.20xx" />
+
+      <div class="event-label">Периодичность</div>
+      <div class="event-dd" id="eventDD">
+        <div class="event-dd-head" id="eventDDHead" tabindex="0" role="button" aria-expanded="false">
+          <div class="event-dd-caret" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            </svg>
+          </div>
+          <div class="event-dd-text">
+            <div class="event-dd-status" id="eventDDStatus">Выбрано:</div>
+            <div class="event-dd-value" id="eventDDValue">Не выбрано</div>
+          </div>
+        </div>
+
+        <div class="event-dd-list" id="eventDDList">
+          <button class="event-dd-option" type="button" data-value="Ежедневно">Ежедневно</button>
+          <button class="event-dd-option" type="button" data-value="Еженедельно">Еженедельно</button>
+          <button class="event-dd-option" type="button" data-value="Ежемесячно">Ежемесячно</button>
+          <button class="event-dd-option" type="button" data-value="Ежегодно">Ежегодно</button>
+        </div>
+      </div>
+
+      <button class="event-done" id="eventDoneBtn" type="button">ГОТОВО</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ===== Слайдер и раскрытие заданий =====
@@ -1189,6 +1450,13 @@ document.querySelectorAll(".task-page").forEach(page => {
     tasksWrap.classList.toggle("expanded");
   });
 });
+const tasksArrow = document.querySelector(".tasks-arrow");
+
+tasksArrow.addEventListener("click", (e) => {
+  e.stopPropagation(); // чтобы клик не улетал дальше
+  tasksCard.classList.toggle("expanded");
+  tasksWrap.classList.toggle("expanded");
+});
 
 
 updateSlider();
@@ -1221,15 +1489,126 @@ function closeCalendar() {
 calendarCard.addEventListener("click", openCalendar);
 calCloseBtn.addEventListener("click", closeCalendar);
 calendarOverlay.addEventListener("click", (e) => {
-  if (e.target === calendarOverlay) {
-    closeCalendar();
+  if (e.target === calendarOverlay) closeCalendar();
+});
+
+// ===== МОДАЛКА "ДОБАВИТЬ СОБЫТИЕ" =====
+const eventOverlay = document.getElementById("eventOverlay");
+const eventCloseBtn = document.getElementById("eventCloseBtn");
+const eventDoneBtn  = document.getElementById("eventDoneBtn");
+
+const eventTypeShell = document.getElementById("eventTypeShell");
+const pillIncome = document.getElementById("pillIncome");
+const pillExpense = document.getElementById("pillExpense");
+
+const eventSum  = document.getElementById("eventSum");
+const eventName = document.getElementById("eventName");
+const eventDate = document.getElementById("eventDate");
+
+const eventDD      = document.getElementById("eventDD");
+const eventDDHead  = document.getElementById("eventDDHead");
+const eventDDList  = document.getElementById("eventDDList");
+const eventDDValue = document.getElementById("eventDDValue");
+const eventDDStatus= document.getElementById("eventDDStatus");
+
+let selectedEventType = "income";     // income | expense
+let selectedPeriod = "";              // строка периодичности
+let calSelectedDay = null;            // выбранный день в календаре
+
+function openEventModal() {
+  // по ТЗ: окно добавления — всплывающее, задний фон — главный экран
+  closeCalendar();
+  eventOverlay.classList.add("active");
+}
+
+function closeEventModal() {
+  eventOverlay.classList.remove("active");
+  // закрываем выпадашку при закрытии
+  eventDD.classList.remove("open");
+  eventDDHead.setAttribute("aria-expanded", "false");
+}
+
+eventCloseBtn.addEventListener("click", closeEventModal);
+eventOverlay.addEventListener("click", (e) => {
+  if (e.target === eventOverlay) closeEventModal();
+});
+
+// --- Тип события: “две кнопки” -> “одна по центру”, повторный клик возвращает две
+function setType(type) {
+  selectedEventType = type;
+
+  // если сейчас обе видимы — схлопываем в одну по центру
+  const isSingle = eventTypeShell.classList.contains("single");
+
+  if (!isSingle) {
+    eventTypeShell.classList.add("single");
+    if (type === "income") {
+      pillExpense.classList.add("hidden");
+      pillIncome.classList.remove("hidden");
+    } else {
+      pillIncome.classList.add("hidden");
+      pillExpense.classList.remove("hidden");
+    }
+    return;
   }
+
+  // если уже single и кликнули по текущей — разворачиваем обратно в две
+  // если single и кликнули “другой” (вдруг ты вернешь вторую кнопкой/кодом) — просто переключим
+  if (type === selectedEventType) {
+    eventTypeShell.classList.remove("single");
+    pillIncome.classList.remove("hidden");
+    pillExpense.classList.remove("hidden");
+  } else {
+    setType(type);
+  }
+}
+
+pillIncome.addEventListener("click", () => setType("income"));
+pillExpense.addEventListener("click", () => setType("expense"));
+
+// --- Периодичность: раскрытие, выбор, “Не выбрано” -> “Выбрано:”
+function toggleDD() {
+  const open = eventDD.classList.toggle("open");
+  eventDDHead.setAttribute("aria-expanded", String(open));
+  // если уже выбран вариант — показываем “Выбрано:” даже когда закрыто
+  if (selectedPeriod) eventDD.classList.add("chosen");
+}
+
+eventDDHead.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleDD();
+});
+
+document.addEventListener("click", (e) => {
+  // клик вне dropdown — закрыть
+  if (!eventDD.contains(e.target)) {
+    eventDD.classList.remove("open");
+    eventDDHead.setAttribute("aria-expanded", "false");
+  }
+});
+
+eventDDList.querySelectorAll(".event-dd-option").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    selectedPeriod = btn.dataset.value || "";
+    eventDDValue.textContent = selectedPeriod || "Не выбрано";
+    eventDDStatus.textContent = "Выбрано:";
+    eventDD.classList.add("chosen");
+
+    // подсветка выбранного
+    eventDDList.querySelectorAll(".event-dd-option").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // по фото 5 список остается раскрытым — оставляем open
+    eventDD.classList.add("open");
+    eventDDHead.setAttribute("aria-expanded", "true");
+  });
 });
 
 // Календарь
 const CAL_MONTHS = [
-  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+  "Январь","Февраль","Март","Апрель","Май","Июнь",
+  "Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"
 ];
 
 // события по месяцам
@@ -1242,7 +1621,8 @@ const CAL_EVENTS = {
   }
 };
 
-const CAL_TYPE_ORDER = ["salary", "okko", "credit", "rent"];
+// добавили income/expense
+const CAL_TYPE_ORDER = ["income","expense","salary","okko","credit","rent"];
 
 const calDaysContainer = document.getElementById("calDays");
 const calInfo = document.getElementById("calSelectedInfo");
@@ -1252,6 +1632,17 @@ const calNextBtn = document.getElementById("calNextMonth");
 
 let calCurrentYear = 2025;
 let calCurrentMonth = 0;
+
+function formatDDMMYYYY(d, m, y){
+  const dd = String(d).padStart(2,"0");
+  const mm = String(m+1).padStart(2,"0");
+  return `${dd}.${mm}.${y}`;
+}
+
+function ensureMonthMap(month){
+  if (!CAL_EVENTS[month]) CAL_EVENTS[month] = {};
+  return CAL_EVENTS[month];
+}
 
 function renderCalendar(year, month) {
   calDaysContainer.innerHTML = "";
@@ -1300,10 +1691,9 @@ function renderCalendar(year, month) {
     calDaysContainer.appendChild(dayEl);
 
     dayEl.addEventListener("click", () => {
-      document
-        .querySelectorAll(".cal-day.selected")
-        .forEach((d) => d.classList.remove("selected"));
+      document.querySelectorAll(".cal-day.selected").forEach((d) => d.classList.remove("selected"));
       dayEl.classList.add("selected");
+      calSelectedDay = day; // запоминаем выбранный день
 
       if (events && events.length) {
         const labels = events.map((ev) => ev.label).join(", ");
@@ -1322,11 +1712,7 @@ function renderCalendar(year, month) {
         calInfo.style.opacity = 0;
         setTimeout(() => {
           calInfo.textContent =
-            "Событий " +
-            day +
-            " " +
-            CAL_MONTHS[month].toLowerCase() +
-            " нет";
+            "Событий " + day + " " + CAL_MONTHS[month].toLowerCase() + " нет";
           calInfo.style.opacity = 1;
         }, 120);
       }
@@ -1340,6 +1726,7 @@ calPrevBtn.addEventListener("click", () => {
     calCurrentMonth = 11;
     calCurrentYear--;
   }
+  calSelectedDay = null;
   renderCalendar(calCurrentYear, calCurrentMonth);
 });
 
@@ -1349,15 +1736,67 @@ calNextBtn.addEventListener("click", () => {
     calCurrentMonth = 0;
     calCurrentYear++;
   }
+  calSelectedDay = null;
   renderCalendar(calCurrentYear, calCurrentMonth);
 });
 
+// Кнопка "Добавить событие" в календаре
 document.querySelector(".cal-add-btn").addEventListener("click", () => {
-  alert("Здесь позже можно будет добавить форму для создания события");
+  // проставим дату в поле: выбранный день, иначе 01
+  const day = calSelectedDay || 1;
+  eventDate.value = formatDDMMYYYY(day, calCurrentMonth, calCurrentYear);
+
+  // сброс формы (минимальный)
+  eventSum.value = "";
+  eventName.value = "";
+  selectedPeriod = "";
+  eventDDValue.textContent = "Не выбрано";
+  eventDD.classList.remove("chosen");
+  eventDDList.querySelectorAll(".event-dd-option").forEach(b => b.classList.remove("active"));
+  eventTypeShell.classList.remove("single");
+  pillIncome.classList.remove("hidden");
+  pillExpense.classList.remove("hidden");
+  selectedEventType = "income";
+
+  openEventModal();
+});
+
+// "ГОТОВО" — добавляем событие в CAL_EVENTS и перерисовываем календарь
+eventDoneBtn.addEventListener("click", () => {
+  const day = calSelectedDay || 1;
+
+  const name = (eventName.value || "").trim();
+  const sum  = (eventSum.value || "").toString().trim();
+
+  if (!name) {
+    alert("Введите название события.");
+    return;
+  }
+  if (!sum) {
+    alert("Введите сумму.");
+    return;
+  }
+
+  const monthMap = ensureMonthMap(calCurrentMonth);
+  if (!monthMap[day]) monthMap[day] = [];
+
+  monthMap[day].push({
+    type: selectedEventType,                 // income | expense
+    label: `${name} (${sum}₽)`               // подпись для инфо-блока
+  });
+
+  closeEventModal();
+  renderCalendar(calCurrentYear, calCurrentMonth);
+
+  // выделим день обратно, чтобы пользователь увидел точку
+  const dayButtons = calDaysContainer.querySelectorAll(".cal-day:not(.disabled)");
+  const btn = Array.from(dayButtons).find(b => b.querySelector(".cal-day-number")?.textContent == String(day));
+  if (btn) btn.click();
 });
 
 renderCalendar(calCurrentYear, calCurrentMonth);
 </script>
+
 
 </body>
 </html>

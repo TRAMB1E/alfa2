@@ -19,6 +19,36 @@ body {
   color: #000000;
   font-size: 17px; /* базовый текст */
 }
+/* стрелка раскрытия — как в примере */
+/* аккуратная стрелка */
+.tasks-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.75;
+}
+.tasks-arrow svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #7F7F83;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+  transform-origin: 50% 50%;
+}
+
+/* при раскрытии — поворот вверх */
+.tasks-card.expanded .tasks-arrow svg {
+  transform: rotate(180deg);
+}
+
 
 .app {
   max-width: 390px;
@@ -141,8 +171,52 @@ h1 span {
   background: #FFFFFF;
   border-radius: 24px;
   border: 1px solid #F3F4F5;
-  overflow: hidden;
+  overflow: hidden;              /* важно, чтобы хвостик был виден */
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+  position: relative;             /* якорь для хвостика */
+}
+.tasks-wrap {
+  position: relative;
+  margin-top: 16px;     /* перенесли отступ сюда */
+}
+.tasks-wrap.expanded .tasks-arrow svg {
+  transform: rotate(180deg);
+}
+
+.tasks-tail {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;        /* насколько торчит вниз */
+  transform: translateX(-50%);
+  width: 34px;
+  height: 22px;
+  background: #fff;
+  border: 1px solid #F3F4F5;
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+}
+.tasks-card::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;                  /* насколько хвостик торчит вниз */
+  transform: translateX(-50%);
+
+  width: 28px;                    /* ширина хвостика */
+  height: 18px;                   /* высота хвостика */
+
+  background: #FFFFFF;
+  border: 1px solid #F3F4F5;
+  border-top: none;               /* чтобы не было двойной линии сверху */
+
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04); /* совпадает с карточкой */
 }
 
 /* контейнер со слайдами */
@@ -230,7 +304,8 @@ h1 span {
 .dots {
   display: flex;
   justify-content: center;
-  padding: 8px 0 10px;
+  padding-bottom: 26px;
+  padding: 8px 0 18px; /* было 8px 0 10px */
 }
 
 .dot {
@@ -762,7 +837,7 @@ h1 span {
     <div class="health-value">100/100</div>
   </div>
 
-  <!-- ===== ЗАДАНИЯ ===== -->
+<div class="tasks-wrap">
   <div class="tasks-card" id="tasksCard">
     <div class="tasks-slider" id="tasksSlider">
       <!-- День -->
@@ -895,7 +970,7 @@ h1 span {
           <div class="task">
             <span>
               <span class="task-prefix">Задача 3:</span>
-              Станьте легендой: Покорите 
+              Станьте легендой: Покорите
               <span class="task-link">Аверест</span>
             </span>
             <div class="check active"></div>
@@ -910,6 +985,14 @@ h1 span {
       <div class="dot"></div>
     </div>
   </div>
+
+  <div class="tasks-tail" aria-hidden="true"></div>
+  <div class="tasks-arrow" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+</div>
 
   <!-- ===== РАЗДЕЛЫ ===== -->
   <div class="finance-title">Ваше финздоровье</div>
@@ -1098,11 +1181,15 @@ document.addEventListener("mouseup", e => {
 });
 
 /* клик по странице — переключение краткий/подробный */
+const tasksWrap = document.querySelector(".tasks-wrap");
+
 document.querySelectorAll(".task-page").forEach(page => {
   page.addEventListener("click", () => {
     tasksCard.classList.toggle("expanded");
+    tasksWrap.classList.toggle("expanded");
   });
 });
+
 
 updateSlider();
 

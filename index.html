@@ -659,6 +659,17 @@ h1 span {
   display: flex;
   gap: 4px;
   justify-content: center;
+  max-width: 26px;         /* не даём точкам растягиваться в линию */
+  flex-wrap: wrap;         /* если точек много — переносим */
+  overflow: hidden;        /* на всякий случай клипуем */
+}
+
+.cal-more {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #565656;
+  margin-top: -1px;
 }
 
 .cal-dot {
@@ -2077,13 +2088,24 @@ function renderCalendar(year, month) {
     const eventsContainer = document.createElement("div");
     eventsContainer.className = "cal-day-events";
 
-    occurrences.forEach((ev) => {
+    // точки событий: ограничиваем количество, чтобы не “расползалось” по экрану
+    const MAX_DOTS_PER_DAY = 3;
+    const shown = occurrences.slice(0, MAX_DOTS_PER_DAY);
+
+    shown.forEach((ev) => {
       const cat = getCategoryById(ev.categoryId);
       const dot = document.createElement("span");
       dot.className = "cal-dot";
       dot.style.background = (cat?.color || ev.color || (ev.type === "income" ? "#19c37d" : "#ff3b30"));
       eventsContainer.appendChild(dot);
     });
+
+    if (occurrences.length > MAX_DOTS_PER_DAY) {
+      const more = document.createElement("span");
+      more.className = "cal-more";
+      more.textContent = "+" + String(occurrences.length - MAX_DOTS_PER_DAY);
+      eventsContainer.appendChild(more);
+    }
 
     dayEl.appendChild(eventsContainer);
     calDaysContainer.appendChild(dayEl);
@@ -2160,6 +2182,7 @@ function renderCalendar(year, month) {
         }, 120);
       }
   });
+  }
 }
 
 // сброс на всякий случай (чтобы не было "накопления")
@@ -2188,29 +2211,35 @@ calNextBtn.onclick = () => {
 
 
 // Кнопка "Добавить событие" в календаре
-document.querySelector(".cal-add-btn").addEventListener("click", () => {
-  const day = calSelectedDay || 1;
-  eventDate.value = formatDDMMYYYY(day, calCurrentMonth, calCurrentYear);
+// Кнопка "Добавить событие" в календаре
+const calAddBtn = document.querySelector(".cal-add-btn");
+if (calAddBtn) {
+  calAddBtn.onclick = null;
+  calAddBtn.onclick = () => {
+      const day = calSelectedDay || 1;
+      eventDate.value = formatDDMMYYYY(day, calCurrentMonth, calCurrentYear);
 
-  // сброс формы
-  eventSum.value = "";
-  eventName.value = "";
-  selectedPeriod = "";
-  eventDDValue.textContent = "Не выбрано";
-  eventDD.classList.remove("chosen");
-  eventDDList.querySelectorAll(".event-dd-option").forEach(b => b.classList.remove("active"));
-  eventTypeShell.classList.remove("single");
-  pillIncome.classList.remove("hidden");
-  pillExpense.classList.remove("hidden");
-  selectedEventType = "income";
+      // сброс формы
+      eventSum.value = "";
+      eventName.value = "";
+      selectedPeriod = "";
+      eventDDValue.textContent = "Не выбрано";
+      eventDD.classList.remove("chosen");
+      eventDDList.querySelectorAll(".event-dd-option").forEach(b => b.classList.remove("active"));
+      eventTypeShell.classList.remove("single");
+      pillIncome.classList.remove("hidden");
+      pillExpense.classList.remove("hidden");
+      selectedEventType = "income";
 
-  renderCategorySelect("");
-  showNewCategoryFields(false);
-  // дефолтный цвет — зелёный для поступления, красный для траты
-  eventColor.value = (selectedEventType === "income") ? "#0ea768" : "#ff3b30";
+      renderCategorySelect("");
+      showNewCategoryFields(false);
+      // дефолтный цвет — зелёный для поступления, красный для траты
+      eventColor.value = (selectedEventType === "income") ? "#0ea768" : "#ff3b30";
 
-  openEventModal();
-});
+      openEventModal();
+  };
+}
+
 
 // UX: при смене типа события в форме — меняем цвет по умолчанию, если категория не выбрана
 function syncDefaultColorByType() {
@@ -2229,74 +2258,86 @@ eventSum.addEventListener("input", () => {
 });
 
 // "ГОТОВО" — сохраняем событие (+ периодичность) в localStorage, затем перерисовываем
-eventDoneBtn.addEventListener("click", () => {
-  const name = (eventName.value || "").trim();
-  const sumNum = Number(eventSum.value);
+// "ГОТОВО" — сохраняем событие (+ периодичность) в localStorage, затем перерисовываем
+let __eventSaveLock = false;
+eventDoneBtn.onclick = null;
+eventDoneBtn.onclick = () => {
+  if (__eventSaveLock) return;
+  __eventSaveLock = true;
+  eventDoneBtn.disabled = true;
+  try {
+      const name = (eventName.value || "").trim();
+      const sumNum = Number(eventSum.value);
 
-  if (!name) {
-    alert("Введите название события.");
-    return;
+      if (!name) {
+        alert("Введите название события.");
+        return;
+      }
+      if (!Number.isFinite(sumNum) || sumNum <= 0) {
+        alert("Введите сумму больше нуля.");
+        return;
+      }
+
+      const dt = parseDDMMYYYY(eventDate.value) || new Date(calCurrentYear, calCurrentMonth, calSelectedDay || 1);
+
+      // категория
+      let catId = "";
+      let color = (eventColor.value || "").trim() || (selectedEventType === "income" ? "#0ea768" : "#ff3b30");
+
+      if (eventCategory.value === "__new__") {
+        const newName = (eventNewCategory.value || "").trim();
+        if (!newName) {
+          alert("Введите название новой категории.");
+          return;
+        }
+        const cat = upsertCategory(newName, color);
+        catId = cat?.id || "";
+      } else if (eventCategory.value) {
+        catId = eventCategory.value;
+        const cat = getCategoryById(catId);
+        if (cat) color = cat.color;
+      } else {
+        // если пользователь не выбрал категорию — создадим по названию события (чтобы легенда была осмысленной)
+        const cat = upsertCategory(name, color);
+        catId = cat?.id || "";
+      }
+
+      // периодичность
+      const recMap = {
+        "Ежедневно": "daily",
+        "Еженедельно": "weekly",
+        "Ежемесячно": "monthly",
+        "Ежегодно": "yearly"
+      };
+      const recurrence = recMap[selectedPeriod] || "none";
+
+      const events = getEvents();
+      events.push({
+        id: uid("ev"),
+        type: selectedEventType, // income | expense
+        amount: Math.round(sumNum),
+        title: name,
+        dateISO: toISODateString(dt.getFullYear(), dt.getMonth(), dt.getDate()),
+        recurrence,
+        categoryId: catId,
+        color
+      });
+      saveEvents(events);
+
+      closeEventModal();
+      renderCalendar(calCurrentYear, calCurrentMonth);
+
+      // выделим день обратно
+      const day = dt.getFullYear() === calCurrentYear && dt.getMonth() === calCurrentMonth ? dt.getDate() : (calSelectedDay || dt.getDate());
+      const dayButtons = calDaysContainer.querySelectorAll(".cal-day:not(.disabled)");
+      const btn = Array.from(dayButtons).find(b => b.querySelector(".cal-day-number")?.textContent == String(day));
+      if (btn) btn.click();
+  } finally {
+    __eventSaveLock = false;
+    eventDoneBtn.disabled = false;
   }
-  if (!Number.isFinite(sumNum) || sumNum <= 0) {
-    alert("Введите сумму больше нуля.");
-    return;
-  }
+};
 
-  const dt = parseDDMMYYYY(eventDate.value) || new Date(calCurrentYear, calCurrentMonth, calSelectedDay || 1);
-
-  // категория
-  let catId = "";
-  let color = (eventColor.value || "").trim() || (selectedEventType === "income" ? "#0ea768" : "#ff3b30");
-
-  if (eventCategory.value === "__new__") {
-    const newName = (eventNewCategory.value || "").trim();
-    if (!newName) {
-      alert("Введите название новой категории.");
-      return;
-    }
-    const cat = upsertCategory(newName, color);
-    catId = cat?.id || "";
-  } else if (eventCategory.value) {
-    catId = eventCategory.value;
-    const cat = getCategoryById(catId);
-    if (cat) color = cat.color;
-  } else {
-    // если пользователь не выбрал категорию — создадим по названию события (чтобы легенда была осмысленной)
-    const cat = upsertCategory(name, color);
-    catId = cat?.id || "";
-  }
-
-  // периодичность
-  const recMap = {
-    "Ежедневно": "daily",
-    "Еженедельно": "weekly",
-    "Ежемесячно": "monthly",
-    "Ежегодно": "yearly"
-  };
-  const recurrence = recMap[selectedPeriod] || "none";
-
-  const events = getEvents();
-  events.push({
-    id: uid("ev"),
-    type: selectedEventType, // income | expense
-    amount: Math.round(sumNum),
-    title: name,
-    dateISO: toISODateString(dt.getFullYear(), dt.getMonth(), dt.getDate()),
-    recurrence,
-    categoryId: catId,
-    color
-  });
-  saveEvents(events);
-
-  closeEventModal();
-  renderCalendar(calCurrentYear, calCurrentMonth);
-
-  // выделим день обратно
-  const day = dt.getFullYear() === calCurrentYear && dt.getMonth() === calCurrentMonth ? dt.getDate() : (calSelectedDay || dt.getDate());
-  const dayButtons = calDaysContainer.querySelectorAll(".cal-day:not(.disabled)");
-  const btn = Array.from(dayButtons).find(b => b.querySelector(".cal-day-number")?.textContent == String(day));
-  if (btn) btn.click();
-});}
 
 renderCalendar(calCurrentYear, calCurrentMonth);
 

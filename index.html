@@ -2162,7 +2162,11 @@ function renderCalendar(year, month) {
   });
 }
 
-calPrevBtn.addEventListener("click", () => {
+// сброс на всякий случай (чтобы не было "накопления")
+calPrevBtn.onclick = null;
+calNextBtn.onclick = null;
+
+calPrevBtn.onclick = () => {
   calCurrentMonth--;
   if (calCurrentMonth < 0) {
     calCurrentMonth = 11;
@@ -2170,9 +2174,9 @@ calPrevBtn.addEventListener("click", () => {
   }
   calSelectedDay = null;
   renderCalendar(calCurrentYear, calCurrentMonth);
-});
+};
 
-calNextBtn.addEventListener("click", () => {
+calNextBtn.onclick = () => {
   calCurrentMonth++;
   if (calCurrentMonth > 11) {
     calCurrentMonth = 0;
@@ -2180,7 +2184,8 @@ calNextBtn.addEventListener("click", () => {
   }
   calSelectedDay = null;
   renderCalendar(calCurrentYear, calCurrentMonth);
-});
+};
+
 
 // Кнопка "Добавить событие" в календаре
 document.querySelector(".cal-add-btn").addEventListener("click", () => {

@@ -715,6 +715,47 @@ h1 span {
   font-weight: 600;
 }
 
+/* список событий в выбранный день */
+.cal-event-list{
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cal-event-row{
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  background: rgba(0,0,0,0.03);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.cal-event-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.cal-event-title{
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.2;
+}
+.cal-event-del{
+  border: none;
+  background: transparent;
+  color: #e53935;
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.cal-event-del:active{
+  transform: translateY(1px);
+  opacity: 0.85;
+}
+
 /* Button */
 
 .cal-add-section {
@@ -767,11 +808,16 @@ h1 span {
 .event-app{
   width: 360px;
   max-width: 100%;
+  /* фиксируем “каркас” модалки, чтобы контент внутри мог скроллиться */
+  max-height: 86vh;
   background: #f3f4f5;
   border-radius: 24px;
   padding: 18px 16px 16px;
   box-shadow: 0 18px 40px rgba(0,0,0,0.35);
   animation: cal-app-pop 450ms ease-out; /* используем твой keyframes */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .event-header{
@@ -802,6 +848,11 @@ h1 span {
   background: #ffffff;
   border-radius: 24px;
   padding: 14px 14px 16px;
+
+  /* скролл, если контента много (например, раскрыта периодичность) */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .event-title{
@@ -863,6 +914,21 @@ h1 span {
   font-size: 16px;
   box-sizing:border-box;
 }
+
+/* select выглядит как инпут */
+select.event-input{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* цветовой инпут чуть плотнее */
+.event-input-color{
+  padding: 0 10px;
+}
+.event-input-color::-webkit-color-swatch-wrapper{ padding: 0; }
+.event-input-color::-webkit-color-swatch{ border: none; border-radius: 10px; }
+
 
 /* периодичность */
 .event-dd{
@@ -969,7 +1035,7 @@ h1 span {
   <!-- Диаграммы -->
   <div class="charts-card" id="chartsCard">
     <!-- Доходы -->
-    <div class="chart-box">
+    <div class="chart-box" data-analytics-type="income" role="button" tabindex="0" aria-label="Открыть аналитику: доходы">
       <div class="donut">
         <svg viewBox="0 0 80 80" aria-hidden="true">
           <path class="income-arc-1"
@@ -990,7 +1056,7 @@ h1 span {
     </div>
 
     <!-- Расходы -->
-    <div class="chart-box">
+    <div class="chart-box" data-analytics-type="expense" role="button" tabindex="0" aria-label="Открыть аналитику: расходы">
       <div class="donut">
         <svg viewBox="0 0 80 80" aria-hidden="true">
           <path class="expense-arc-1"
@@ -1308,24 +1374,7 @@ h1 span {
 
       <div class="cal-selected-info" id="calSelectedInfo"></div>
 
-      <section class="cal-legend">
-        <div class="cal-legend-item">
-          <span class="cal-legend-dot salary"></span>
-          <span>Зарплата</span>
-        </div>
-        <div class="cal-legend-item">
-          <span class="cal-legend-dot okko"></span>
-          <span>Подписка OKKO</span>
-        </div>
-        <div class="cal-legend-item">
-          <span class="cal-legend-dot rent"></span>
-          <span>Оплата жилья</span>
-        </div>
-        <div class="cal-legend-item">
-          <span class="cal-legend-dot credit"></span>
-          <span>% по кредиту</span>
-        </div>
-      </section>
+      <section class="cal-legend" id="calLegend"></section>
 
       <section class="cal-add-section">
         <button class="cal-add-btn" type="button">Добавить событие</button>
@@ -1354,10 +1403,20 @@ h1 span {
       </div>
 
       <div class="event-label">Сумма</div>
-      <input class="event-input" id="eventSum" type="number" inputmode="numeric" placeholder="" />
+      <input class="event-input" id="eventSum" type="number" min="1" step="1" inputmode="numeric" placeholder="" />
 
       <div class="event-label">Название</div>
       <input class="event-input" id="eventName" type="text" placeholder="" />
+
+      
+      <div class="event-label">Категория</div>
+      <select class="event-input" id="eventCategory"></select>
+
+      <div class="event-label" id="newCatLabel" style="display:none;">Новая категория</div>
+      <input class="event-input" id="eventNewCategory" type="text" placeholder="Например: Кафе" style="display:none;" />
+
+      <div class="event-label">Цвет</div>
+      <input class="event-input event-input-color" id="eventColor" type="color" value="#0ea768" />
 
       <div class="event-label">Дата операции</div>
       <input class="event-input" id="eventDate" type="text" placeholder="xx.xx.20xx" />
@@ -1461,13 +1520,41 @@ tasksArrow.addEventListener("click", (e) => {
 
 updateSlider();
 
-/* переход в аналитику по клику на диаграммы */
-document.getElementById("chartsCard").onclick = () => {
-  location.href = "analytics.html";
-};
+/* переход в аналитику по клику на диаграммы (с учётом выбранного типа) */
+(function () {
+  const card = document.getElementById("chartsCard");
+  if (!card) return;
+
+  function go(type) {
+    const url = new URL("analytics.html", window.location.href);
+    url.searchParams.set("type", type); // income | expense
+    window.location.href = url.toString();
+  }
+
+  // клик по конкретной диаграмме
+  card.querySelectorAll("[data-analytics-type]").forEach((box) => {
+    box.addEventListener("click", (e) => {
+      e.stopPropagation();
+      go(box.getAttribute("data-analytics-type"));
+    });
+
+    // доступность: Enter/Space
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        go(box.getAttribute("data-analytics-type"));
+      }
+    });
+  });
+
+  // если кликнули в «пустое» место карточки — открываем доходы по умолчанию
+  card.addEventListener("click", () => go("income"));
+})();
 
 /* переход в планирование по клику на основную карточку */
-document.getElementById("financeMain").onclick = () => {
+document.getElementById("financeMain").onclick = (e) => {
+  // не перехватываем клики по карточкам внутри (например, календарь)
+  if (e.target.closest && e.target.closest("#calendarCard, .finance-link")) return;
   location.href = "finance.html";
 };
 </script>
@@ -1486,7 +1573,7 @@ function closeCalendar() {
   calendarOverlay.classList.remove("active");
 }
 
-calendarCard.addEventListener("click", openCalendar);
+calendarCard.addEventListener("click", (e) => { e.stopPropagation(); openCalendar(); });
 calCloseBtn.addEventListener("click", closeCalendar);
 calendarOverlay.addEventListener("click", (e) => {
   if (e.target === calendarOverlay) closeCalendar();
@@ -1605,25 +1692,234 @@ eventDDList.querySelectorAll(".event-dd-option").forEach((btn) => {
   });
 });
 
+
 // Календарь
 const CAL_MONTHS = [
   "Январь","Февраль","Март","Апрель","Май","Июнь",
   "Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"
 ];
 
-// события по месяцам
-const CAL_EVENTS = {
-  0: {
-    6:  [{ type: "salary", label: "Зарплата" }],
-    17: [{ type: "salary", label: "Зарплата" }],
-    19: [{ type: "credit", label: "% по кредиту" }],
-    25: [{ type: "okko", label: "Подписка OKKO" }]
-  }
+// ===== LocalStorage (категории + события) =====
+const LS_KEYS = {
+  categories: "finz_calendar_categories_v1",
+  events: "finz_calendar_events_v1",
+  seeded: "finz_calendar_seeded_v1"
 };
 
-// добавили income/expense
-const CAL_TYPE_ORDER = ["income","expense","salary","okko","credit","rent"];
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    return fallback;
+  }
+}
 
+function saveJSON(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function uid(prefix = "id") {
+  return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+}
+
+function toISODateString(y, m, d) {
+  const mm = String(m + 1).padStart(2, "0");
+  const dd = String(d).padStart(2, "0");
+  return `${y}-${mm}-${dd}`;
+}
+
+function parseDDMMYYYY(str) {
+  const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec((str || "").trim());
+  if (!m) return null;
+  const dd = Number(m[1]);
+  const mm = Number(m[2]);
+  const yy = Number(m[3]);
+  if (!yy || mm < 1 || mm > 12 || dd < 1 || dd > 31) return null;
+  const dt = new Date(yy, mm - 1, dd);
+  if (dt.getFullYear() !== yy || dt.getMonth() !== (mm - 1) || dt.getDate() !== dd) return null;
+  return dt;
+}
+
+function formatDDMMYYYY(d, m, y){
+  const dd = String(d).padStart(2,"0");
+  const mm = String(m+1).padStart(2,"0");
+  return `${dd}.${mm}.${y}`;
+}
+
+function clampDayOfMonth(year, month, day) {
+  const dim = new Date(year, month + 1, 0).getDate();
+  return Math.min(day, dim);
+}
+
+function addMonths(date, months) {
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const d = date.getDate();
+  const nm = m + months;
+  const ny = y + Math.floor(nm / 12);
+  const nmo = ((nm % 12) + 12) % 12;
+  const nd = clampDayOfMonth(ny, nmo, d);
+  return new Date(ny, nmo, nd);
+}
+
+function addDays(date, days) {
+  const dt = new Date(date);
+  dt.setDate(dt.getDate() + days);
+  return dt;
+}
+
+function monthDiff(a, b) {
+  return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+}
+
+// Инициализация категорий + демо-событий (один раз)
+function ensureSeedData() {
+  const seeded = localStorage.getItem(LS_KEYS.seeded);
+  if (seeded) return;
+
+  const defaultCategories = [
+    { id: "salary", name: "Зарплата", color: "#0ea768" },
+    { id: "okko",   name: "Подписка OKKO", color: "#e91e63" },
+    { id: "rent",   name: "Оплата жилья", color: "#fdd835" },
+    { id: "credit", name: "% по кредиту", color: "#ff9800" }
+  ];
+  saveJSON(LS_KEYS.categories, defaultCategories);
+
+  // Пример из текущего прототипа: январь 2025
+  const demoEvents = [
+    { id: uid("ev"), type: "income",  amount: 0, title: "Зарплата", dateISO: "2025-01-06", recurrence: "none", categoryId: "salary", color: "#0ea768" },
+    { id: uid("ev"), type: "income",  amount: 0, title: "Зарплата", dateISO: "2025-01-17", recurrence: "none", categoryId: "salary", color: "#0ea768" },
+    { id: uid("ev"), type: "expense", amount: 0, title: "% по кредиту", dateISO: "2025-01-19", recurrence: "none", categoryId: "credit", color: "#ff9800" },
+    { id: uid("ev"), type: "expense", amount: 0, title: "Подписка OKKO", dateISO: "2025-01-25", recurrence: "none", categoryId: "okko", color: "#e91e63" }
+  ];
+  saveJSON(LS_KEYS.events, demoEvents);
+
+  localStorage.setItem(LS_KEYS.seeded, "1");
+}
+
+ensureSeedData();
+
+function getCategories() {
+  return loadJSON(LS_KEYS.categories, []);
+}
+
+function saveCategories(cats) {
+  saveJSON(LS_KEYS.categories, cats);
+}
+
+function getEvents() {
+  return loadJSON(LS_KEYS.events, []);
+}
+
+function saveEvents(events) {
+  saveJSON(LS_KEYS.events, events);
+}
+
+function deleteEventById(eventId) {
+  const events = getEvents();
+  const next = events.filter(ev => ev.id !== eventId);
+  saveEvents(next);
+}
+
+function getCategoryById(id) {
+  const cats = getCategories();
+  return cats.find(c => c.id === id) || null;
+}
+
+function upsertCategory(name, color) {
+  const trimmed = (name || "").trim();
+  if (!trimmed) return null;
+
+  const cats = getCategories();
+  const existing = cats.find(c => c.name.toLowerCase() === trimmed.toLowerCase());
+  if (existing) {
+    // если пользователь выбрал другой цвет — обновим
+    existing.color = color || existing.color;
+    saveCategories(cats);
+    return existing;
+  }
+
+  const cat = { id: uid("cat"), name: trimmed, color: color || "#2563eb" };
+  cats.push(cat);
+  saveCategories(cats);
+  return cat;
+}
+
+// ===== UI: категория/цвет в форме =====
+const eventCategory = document.getElementById("eventCategory");
+const eventColor = document.getElementById("eventColor");
+const eventNewCategory = document.getElementById("eventNewCategory");
+const newCatLabel = document.getElementById("newCatLabel");
+
+function renderCategorySelect(selectedId = "") {
+  const cats = getCategories();
+  eventCategory.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Выберите категорию";
+  placeholder.disabled = true;
+  placeholder.selected = !selectedId;
+  eventCategory.appendChild(placeholder);
+
+  cats.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name;
+    if (c.id === selectedId) opt.selected = true;
+    eventCategory.appendChild(opt);
+  });
+
+  const optNew = document.createElement("option");
+  optNew.value = "__new__";
+  optNew.textContent = "＋ Новая категория";
+  eventCategory.appendChild(optNew);
+}
+
+function showNewCategoryFields(show) {
+  newCatLabel.style.display = show ? "block" : "none";
+  eventNewCategory.style.display = show ? "block" : "none";
+  if (!show) eventNewCategory.value = "";
+}
+
+eventCategory.addEventListener("change", () => {
+  const val = eventCategory.value;
+  if (val === "__new__") {
+    showNewCategoryFields(true);
+    // цвет по умолчанию оставляем как есть
+  } else {
+    showNewCategoryFields(false);
+    const cat = getCategoryById(val);
+    if (cat) eventColor.value = cat.color;
+  }
+});
+
+// ===== Рендер легенды =====
+const calLegend = document.getElementById("calLegend");
+
+function renderLegend() {
+  const cats = getCategories();
+  calLegend.innerHTML = "";
+  cats.forEach((c) => {
+    const item = document.createElement("div");
+    item.className = "cal-legend-item";
+
+    const dot = document.createElement("span");
+    dot.className = "cal-legend-dot";
+    dot.style.background = c.color;
+
+    const label = document.createElement("span");
+    label.textContent = c.name;
+
+    item.appendChild(dot);
+    item.appendChild(label);
+    calLegend.appendChild(item);
+  });
+}
+
+// ===== Рендер календаря =====
 const calDaysContainer = document.getElementById("calDays");
 const calInfo = document.getElementById("calSelectedInfo");
 const calMonthNameEl = document.getElementById("calMonthName");
@@ -1632,16 +1928,119 @@ const calNextBtn = document.getElementById("calNextMonth");
 
 let calCurrentYear = 2025;
 let calCurrentMonth = 0;
+calSelectedDay = null; // выбранный день в календаре
 
-function formatDDMMYYYY(d, m, y){
-  const dd = String(d).padStart(2,"0");
-  const mm = String(m+1).padStart(2,"0");
-  return `${dd}.${mm}.${y}`;
-}
+function getOccurrencesForMonth(year, month) {
+  const events = getEvents();
+  const map = {}; // day -> [{...}]
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
 
-function ensureMonthMap(month){
-  if (!CAL_EVENTS[month]) CAL_EVENTS[month] = {};
-  return CAL_EVENTS[month];
+  for (const ev of events) {
+    const start = new Date(ev.dateISO + "T00:00:00");
+    if (Number.isNaN(start.getTime())) continue;
+
+    // горизонт: 12 месяцев вперёд от даты старта
+    const horizonEnd = addMonths(start, 12);
+
+    // если текущий месяц полностью вне горизонта — пропускаем
+    if (monthStart > horizonEnd) continue;
+    if (monthEnd < start) continue;
+
+    const rec = (ev.recurrence || "none").toLowerCase();
+
+    const addOcc = (dt) => {
+      if (dt.getFullYear() !== year || dt.getMonth() !== month) return;
+      const day = dt.getDate();
+      if (!map[day]) map[day] = [];
+      map[day].push(ev);
+    };
+
+    if (rec === "none" || !rec) {
+      addOcc(start);
+      continue;
+    }
+
+    if (rec === "daily") {
+      // первое попадание в месяц
+      let dt = new Date(start);
+      if (dt < monthStart) {
+        const diffDays = Math.floor((monthStart - dt) / (24 * 3600 * 1000));
+        dt = addDays(dt, diffDays);
+      }
+      while (dt <= monthEnd && dt <= horizonEnd) {
+        addOcc(dt);
+        dt = addDays(dt, 1);
+      }
+      continue;
+    }
+
+    if (rec === "weekly") {
+      let dt = new Date(start);
+      if (dt < monthStart) {
+        const diffDays = Math.floor((monthStart - dt) / (24 * 3600 * 1000));
+        const shiftWeeks = Math.floor(diffDays / 7);
+        dt = addDays(dt, shiftWeeks * 7);
+        while (dt < monthStart) dt = addDays(dt, 7);
+      }
+      while (dt <= monthEnd && dt <= horizonEnd) {
+        addOcc(dt);
+        dt = addDays(dt, 7);
+      }
+      continue;
+    }
+
+    if (rec === "monthly") {
+      const startMonth = new Date(start.getFullYear(), start.getMonth(), 1);
+      const targetMonth = new Date(year, month, 1);
+
+      const mdiff = monthDiff(startMonth, targetMonth);
+      if (mdiff < 0) continue;
+
+      // начинаем с первого месяца, который попадает
+      let k = mdiff;
+      let dt = addMonths(start, k);
+      // подстрахуемся (если из-за клампа пролезли назад)
+      while (dt < monthStart) {
+        k += 1;
+        dt = addMonths(start, k);
+      }
+
+      while (dt <= monthEnd && dt <= horizonEnd) {
+        addOcc(dt);
+        k += 1;
+        dt = addMonths(start, k);
+      }
+      continue;
+    }
+
+    if (rec === "yearly") {
+      // оставляем на всякий случай (у тебя в списке есть "Ежегодно")
+      let dt = new Date(start);
+      if (dt < monthStart) {
+        const yearsShift = year - start.getFullYear();
+        dt = new Date(start.getFullYear() + yearsShift, start.getMonth(), clampDayOfMonth(start.getFullYear() + yearsShift, start.getMonth(), start.getDate()));
+        if (dt < monthStart) dt = new Date(dt.getFullYear() + 1, dt.getMonth(), dt.getDate());
+      }
+      while (dt <= monthEnd && dt <= horizonEnd) {
+        addOcc(dt);
+        dt = new Date(dt.getFullYear() + 1, dt.getMonth(), dt.getDate());
+      }
+      continue;
+    }
+  }
+
+  // сортировка для стабильного порядка точек
+  for (const day of Object.keys(map)) {
+    map[day].sort((a, b) => {
+      if (a.type !== b.type) return a.type === "income" ? -1 : 1;
+      const ca = getCategoryById(a.categoryId)?.name || "";
+      const cb = getCategoryById(b.categoryId)?.name || "";
+      return ca.localeCompare(cb, "ru");
+    });
+  }
+
+  return map;
 }
 
 function renderCalendar(year, month) {
@@ -1649,7 +2048,9 @@ function renderCalendar(year, month) {
   calInfo.textContent = "";
   calMonthNameEl.textContent = CAL_MONTHS[month];
 
-  const eventsMap = CAL_EVENTS[month] || {};
+  renderLegend();
+
+  const eventsMap = getOccurrencesForMonth(year, month);
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
@@ -1672,20 +2073,17 @@ function renderCalendar(year, month) {
     num.textContent = day;
     dayEl.appendChild(num);
 
-    const events = eventsMap[day];
+    const occurrences = eventsMap[day] || [];
     const eventsContainer = document.createElement("div");
     eventsContainer.className = "cal-day-events";
 
-    if (events) {
-      events
-        .slice()
-        .sort((a, b) => CAL_TYPE_ORDER.indexOf(a.type) - CAL_TYPE_ORDER.indexOf(b.type))
-        .forEach((ev) => {
-          const dot = document.createElement("span");
-          dot.className = "cal-dot " + ev.type;
-          eventsContainer.appendChild(dot);
-        });
-    }
+    occurrences.forEach((ev) => {
+      const cat = getCategoryById(ev.categoryId);
+      const dot = document.createElement("span");
+      dot.className = "cal-dot";
+      dot.style.background = (cat?.color || ev.color || (ev.type === "income" ? "#19c37d" : "#ff3b30"));
+      eventsContainer.appendChild(dot);
+    });
 
     dayEl.appendChild(eventsContainer);
     calDaysContainer.appendChild(dayEl);
@@ -1693,19 +2091,64 @@ function renderCalendar(year, month) {
     dayEl.addEventListener("click", () => {
       document.querySelectorAll(".cal-day.selected").forEach((d) => d.classList.remove("selected"));
       dayEl.classList.add("selected");
-      calSelectedDay = day; // запоминаем выбранный день
+      calSelectedDay = day;
 
-      if (events && events.length) {
-        const labels = events.map((ev) => ev.label).join(", ");
+      if (occurrences.length) {
         calInfo.style.opacity = 0;
         setTimeout(() => {
-          calInfo.innerHTML =
+          const header =
             "События <span>" +
             day +
             " " +
             CAL_MONTHS[month].toLowerCase() +
-            "</span>: " +
-            labels;
+            "</span>:";
+
+          const list = document.createElement("div");
+          list.className = "cal-event-list";
+
+          occurrences.forEach((ev) => {
+            const cat = getCategoryById(ev.categoryId);
+            const color = (cat?.color || ev.color || (ev.type === "income" ? "#19c37d" : "#ff3b30"));
+
+            const row = document.createElement("div");
+            row.className = "cal-event-row";
+
+            const dot = document.createElement("span");
+            dot.className = "cal-event-dot";
+            dot.style.background = color;
+
+            const title = document.createElement("div");
+            title.className = "cal-event-title";
+            const amount = ev.amount && Number(ev.amount) > 0 ? ` — ${Number(ev.amount).toLocaleString("ru-RU")}₽` : "";
+            title.textContent = (ev.title || cat?.name || "Событие") + amount;
+
+            const del = document.createElement("button");
+            del.type = "button";
+            del.className = "cal-event-del";
+            del.textContent = "Удалить";
+            del.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const ok = confirm("Удалить событие? Оно исчезнет из календаря (включая повторы, если они есть).");
+              if (!ok) return;
+
+              deleteEventById(ev.id);
+              renderCalendar(calCurrentYear, calCurrentMonth);
+
+              // пере-выделим этот же день, чтобы список обновился
+              const dayButtons = calDaysContainer.querySelectorAll(".cal-day:not(.disabled)");
+              const btn = Array.from(dayButtons).find(b => b.querySelector(".cal-day-number")?.textContent == String(day));
+              if (btn) btn.click();
+            });
+
+            row.appendChild(dot);
+            row.appendChild(title);
+            row.appendChild(del);
+
+            list.appendChild(row);
+          });
+
+          calInfo.innerHTML = header;
+          calInfo.appendChild(list);
           calInfo.style.opacity = 1;
         }, 120);
       } else {
@@ -1716,8 +2159,7 @@ function renderCalendar(year, month) {
           calInfo.style.opacity = 1;
         }, 120);
       }
-    });
-  }
+  });
 }
 
 calPrevBtn.addEventListener("click", () => {
@@ -1742,11 +2184,10 @@ calNextBtn.addEventListener("click", () => {
 
 // Кнопка "Добавить событие" в календаре
 document.querySelector(".cal-add-btn").addEventListener("click", () => {
-  // проставим дату в поле: выбранный день, иначе 01
   const day = calSelectedDay || 1;
   eventDate.value = formatDDMMYYYY(day, calCurrentMonth, calCurrentYear);
 
-  // сброс формы (минимальный)
+  // сброс формы
   eventSum.value = "";
   eventName.value = "";
   selectedPeriod = "";
@@ -1758,43 +2199,102 @@ document.querySelector(".cal-add-btn").addEventListener("click", () => {
   pillExpense.classList.remove("hidden");
   selectedEventType = "income";
 
+  renderCategorySelect("");
+  showNewCategoryFields(false);
+  // дефолтный цвет — зелёный для поступления, красный для траты
+  eventColor.value = (selectedEventType === "income") ? "#0ea768" : "#ff3b30";
+
   openEventModal();
 });
 
-// "ГОТОВО" — добавляем событие в CAL_EVENTS и перерисовываем календарь
-eventDoneBtn.addEventListener("click", () => {
-  const day = calSelectedDay || 1;
+// UX: при смене типа события в форме — меняем цвет по умолчанию, если категория не выбрана
+function syncDefaultColorByType() {
+  if (!eventCategory.value || eventCategory.value === "__new__") {
+    eventColor.value = (selectedEventType === "income") ? "#0ea768" : "#ff3b30";
+  }
+}
+pillIncome.addEventListener("click", () => setTimeout(syncDefaultColorByType, 0));
+pillExpense.addEventListener("click", () => setTimeout(syncDefaultColorByType, 0));
 
+// Валидация суммы (не даём отрицательные/ноль)
+eventSum.addEventListener("input", () => {
+  const v = Number(eventSum.value);
+  if (Number.isNaN(v)) return;
+  if (v < 0) eventSum.value = String(Math.abs(v));
+});
+
+// "ГОТОВО" — сохраняем событие (+ периодичность) в localStorage, затем перерисовываем
+eventDoneBtn.addEventListener("click", () => {
   const name = (eventName.value || "").trim();
-  const sum  = (eventSum.value || "").toString().trim();
+  const sumNum = Number(eventSum.value);
 
   if (!name) {
     alert("Введите название события.");
     return;
   }
-  if (!sum) {
-    alert("Введите сумму.");
+  if (!Number.isFinite(sumNum) || sumNum <= 0) {
+    alert("Введите сумму больше нуля.");
     return;
   }
 
-  const monthMap = ensureMonthMap(calCurrentMonth);
-  if (!monthMap[day]) monthMap[day] = [];
+  const dt = parseDDMMYYYY(eventDate.value) || new Date(calCurrentYear, calCurrentMonth, calSelectedDay || 1);
 
-  monthMap[day].push({
-    type: selectedEventType,                 // income | expense
-    label: `${name} (${sum}₽)`               // подпись для инфо-блока
+  // категория
+  let catId = "";
+  let color = (eventColor.value || "").trim() || (selectedEventType === "income" ? "#0ea768" : "#ff3b30");
+
+  if (eventCategory.value === "__new__") {
+    const newName = (eventNewCategory.value || "").trim();
+    if (!newName) {
+      alert("Введите название новой категории.");
+      return;
+    }
+    const cat = upsertCategory(newName, color);
+    catId = cat?.id || "";
+  } else if (eventCategory.value) {
+    catId = eventCategory.value;
+    const cat = getCategoryById(catId);
+    if (cat) color = cat.color;
+  } else {
+    // если пользователь не выбрал категорию — создадим по названию события (чтобы легенда была осмысленной)
+    const cat = upsertCategory(name, color);
+    catId = cat?.id || "";
+  }
+
+  // периодичность
+  const recMap = {
+    "Ежедневно": "daily",
+    "Еженедельно": "weekly",
+    "Ежемесячно": "monthly",
+    "Ежегодно": "yearly"
+  };
+  const recurrence = recMap[selectedPeriod] || "none";
+
+  const events = getEvents();
+  events.push({
+    id: uid("ev"),
+    type: selectedEventType, // income | expense
+    amount: Math.round(sumNum),
+    title: name,
+    dateISO: toISODateString(dt.getFullYear(), dt.getMonth(), dt.getDate()),
+    recurrence,
+    categoryId: catId,
+    color
   });
+  saveEvents(events);
 
   closeEventModal();
   renderCalendar(calCurrentYear, calCurrentMonth);
 
-  // выделим день обратно, чтобы пользователь увидел точку
+  // выделим день обратно
+  const day = dt.getFullYear() === calCurrentYear && dt.getMonth() === calCurrentMonth ? dt.getDate() : (calSelectedDay || dt.getDate());
   const dayButtons = calDaysContainer.querySelectorAll(".cal-day:not(.disabled)");
   const btn = Array.from(dayButtons).find(b => b.querySelector(".cal-day-number")?.textContent == String(day));
   if (btn) btn.click();
-});
+});}
 
 renderCalendar(calCurrentYear, calCurrentMonth);
+
 </script>
 
 

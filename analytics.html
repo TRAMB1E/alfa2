@@ -794,28 +794,47 @@
   const legendIncome = document.getElementById('legendIncome');
   const legendExpense = document.getElementById('legendExpense');
 
+  function setAnalyticsType(type, { resetSlider = true, syncUrl = true } = {}) {
+    // табы
+    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-type') === type));
+
+    // группы графиков + легенды
+    if (type === 'income') {
+      chartsIncome.classList.remove('hidden');
+      chartsExpense.classList.add('hidden');
+      legendIncome.classList.remove('hidden');
+      legendExpense.classList.add('hidden');
+      if (resetSlider) incomeSlider.reset();
+    } else {
+      chartsIncome.classList.add('hidden');
+      chartsExpense.classList.remove('hidden');
+      legendIncome.classList.add('hidden');
+      legendExpense.classList.remove('hidden');
+      if (resetSlider) expenseSlider.reset();
+    }
+
+    // синхронизация с URL, чтобы при refresh оставалось выбранное
+    if (syncUrl) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('type', type);
+      window.history.replaceState({}, '', url.toString());
+    }
+  }
+
+  // клики по табам
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
       const type = tab.getAttribute('data-type');
-      if (type === 'income') {
-        chartsIncome.classList.remove('hidden');
-        chartsExpense.classList.add('hidden');
-        legendIncome.classList.remove('hidden');
-        legendExpense.classList.add('hidden');
-        incomeSlider.reset();
-      } else {
-        chartsIncome.classList.add('hidden');
-        chartsExpense.classList.remove('hidden');
-        legendIncome.classList.add('hidden');
-        legendExpense.classList.remove('hidden');
-        expenseSlider.reset();
-      }
+      setAnalyticsType(type, { resetSlider: true, syncUrl: true });
     });
   });
 
+  // инициализация: читаем ?type=income|expense (если нет — доходы)
+  (function initFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    setAnalyticsType(type === 'expense' ? 'expense' : 'income', { resetSlider: false, syncUrl: true });
+  })();
   /* ===== СЛАЙДЕР ЗАДАНИЙ ===== */
   let taskIndex = 0;
   const tasksSlider = document.getElementById('tasksSlider');
